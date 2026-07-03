@@ -46,7 +46,6 @@
   }
   .app { max-width: 520px; margin: 0 auto; padding: 16px 16px 0; }
   
-  /* Header */
   .header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 8px 0 20px;
@@ -64,7 +63,6 @@
   .icon-btn:hover { background: var(--card-2); }
   .icon-btn svg { width: 20px; height: 20px; }
 
-  /* Cards */
   .card {
     background: var(--card);
     border-radius: 20px;
@@ -110,13 +108,11 @@
   [data-theme="light"] .balance-stat-label { color: rgba(13,13,18,0.6); }
   .balance-stat-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
 
-  /* Section */
   .section-title {
     font-size: 13px; color: var(--text-2); text-transform: uppercase;
     letter-spacing: 0.8px; margin: 20px 4px 10px; font-weight: 600;
   }
 
-  /* Orders list */
   .order-item {
     display: flex; align-items: center; gap: 12px;
     padding: 14px; background: var(--card);
@@ -143,7 +139,6 @@
   .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
   .empty-text { font-size: 14px; }
 
-  /* Calendar */
   .cal-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 16px;
@@ -175,7 +170,6 @@
   }
   .cal-day.selected.has-orders::after { background: #0d0d12; }
 
-  /* Tabs */
   .tabs {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--bg-2);
@@ -197,7 +191,6 @@
   .tab-label { font-size: 10px; font-weight: 600; }
   .tab.active { color: var(--accent); }
 
-  /* FAB */
   .fab {
     position: fixed; bottom: 90px; right: 20px;
     width: 56px; height: 56px; border-radius: 50%;
@@ -211,7 +204,6 @@
   .fab:active { transform: scale(0.95); }
   .fab svg { width: 28px; height: 28px; }
 
-  /* Modal */
   .modal-bg {
     position: fixed; inset: 0; background: rgba(0,0,0,0.6);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -272,8 +264,11 @@
     border: 1px solid var(--border);
   }
   .btn-danger { background: var(--red); color: white; }
+  .btn-small {
+    padding: 10px 16px; font-size: 14px;
+    margin-top: 0;
+  }
 
-  /* Tariffs */
   .tariff-item {
     display: flex; align-items: center; gap: 12px;
     padding: 14px; background: var(--card);
@@ -301,7 +296,6 @@
   .mini-btn.danger:hover { color: var(--red); }
   .mini-btn svg { width: 16px; height: 16px; }
 
-  /* Day view */
   .day-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 16px;
@@ -317,7 +311,6 @@
     padding: 8px 0; margin-bottom: 12px; font-family: inherit;
   }
 
-  /* Toast */
   .toast {
     position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
     background: var(--card); color: var(--text);
@@ -341,7 +334,52 @@
   .price-preview-label { color: var(--text-2); font-size: 13px; }
   .price-preview-value { font-size: 20px; font-weight: 800; color: var(--accent); }
 
-  /* Scrollbar */
+  .items-section {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+  }
+  .items-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .items-title { font-size: 14px; font-weight: 700; }
+  .item-card {
+    background: var(--card-2);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .item-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--red);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .item-price {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(46,213,115,0.1);
+    border-radius: 8px;
+    text-align: right;
+    font-weight: 700;
+    color: var(--green);
+  }
+
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -364,7 +402,6 @@
     </div>
   </div>
 
-  <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="card balance-card">
       <div class="balance-label">
@@ -389,7 +426,6 @@
     <div id="recentOrders"></div>
   </div>
 
-  <!-- CALENDAR -->
   <div class="view" id="view-calendar">
     <div id="calendarView">
       <div class="card">
@@ -414,19 +450,16 @@
     </div>
   </div>
 
-  <!-- TARIFFS -->
   <div class="view" id="view-tariffs">
     <div class="section-title">Тарифы на операции</div>
     <div id="tariffList"></div>
   </div>
 </div>
 
-<!-- FAB -->
 <button class="fab" id="fabAdd">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 
-<!-- Tabs -->
 <div class="tabs">
   <button class="tab active" data-view="home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -442,7 +475,6 @@
   </button>
 </div>
 
-<!-- Modal: New Order -->
 <div class="modal-bg" id="orderModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -459,24 +491,15 @@
       <label class="field-label">Название изделия</label>
       <input type="text" class="input" id="fName" placeholder="Например: Стол обеденный">
     </div>
-    <div class="row-2">
-      <div class="field">
-        <label class="field-label">Ширина, см</label>
-        <input type="number" class="input" id="fWidth" placeholder="0" min="0" step="0.1">
+    
+    <div class="items-section">
+      <div class="items-header">
+        <div class="items-title">Операции</div>
+        <button class="btn btn-small btn-secondary" id="addItemBtn" style="margin:0">+ Добавить</button>
       </div>
-      <div class="field">
-        <label class="field-label">Высота, см</label>
-        <input type="number" class="input" id="fHeight" placeholder="0" min="0" step="0.1">
-      </div>
+      <div id="itemsList"></div>
     </div>
-    <div class="field">
-      <label class="field-label">Тариф</label>
-      <select class="select" id="fTariff"></select>
-    </div>
-    <div class="field">
-      <label class="field-label">Количество</label>
-      <input type="number" class="input" id="fQty" value="1" min="1" step="1">
-    </div>
+
     <div class="price-preview">
       <span class="price-preview-label">Итого</span>
       <span class="price-preview-value" id="pricePreview">0 ₽</span>
@@ -486,7 +509,6 @@
   </div>
 </div>
 
-<!-- Modal: Tariff -->
 <div class="modal-bg" id="tariffModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -498,8 +520,9 @@
     <div class="field">
       <label class="field-label">Тип расчёта</label>
       <select class="select" id="tType">
-        <option value="unit">За штуку (фикс. цена)</option>
-        <option value="sqm">За м² (по площади)</option>
+        <option value="sqm">За м² (площадь)</option>
+        <option value="pm">За пм (погонный метр)</option>
+        <option value="hour">За час</option>
       </select>
     </div>
     <div class="field">
@@ -511,7 +534,6 @@
   </div>
 </div>
 
-<!-- Modal: Order Details -->
 <div class="modal-bg" id="detailModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -526,9 +548,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ STATE ============
-const LS_ORDERS = 'tabel_orders_v1';
-const LS_TARIFFS = 'tabel_tariffs_v1';
+const LS_ORDERS = 'tabel_orders_v2';
+const LS_TARIFFS = 'tabel_tariffs_v2';
 const LS_THEME = 'tabel_theme_v1';
 
 let orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
@@ -539,12 +560,17 @@ let selectedDay = null;
 let editingOrderId = null;
 let editingTariffId = null;
 let currentDetailId = null;
+let currentItems = [];
 
-// Seed default tariffs if empty
 if (tariffs.length === 0) {
   tariffs = [
-    { id: uid(), name: 'Сборка', type: 'unit', price: 500 },
-    { id: uid(), name: 'Покраска', type: 'sqm', price: 350 }
+    { id: uid(), name: 'Распил', type: 'sqm', price: 65 },
+    { id: uid(), name: 'Линейный распил', type: 'pm', price: 26 },
+    { id: uid(), name: 'Распил и склейка', type: 'sqm', price: 210 },
+    { id: uid(), name: 'Склейка', type: 'sqm', price: 165 },
+    { id: uid(), name: 'Пазы', type: 'pm', price: 30 },
+    { id: uid(), name: 'Фаска', type: 'pm', price: 16 },
+    { id: uid(), name: 'Время', type: 'hour', price: 330 }
   ];
   saveTariffs();
 }
@@ -557,15 +583,29 @@ function todayStr() {
   const d = new Date();
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
-function calcOrderPrice(o) {
-  const t = tariffs.find(x => x.id === o.tariffId);
+
+function calcItemPrice(item) {
+  const t = tariffs.find(x => x.id === item.tariffId);
   if (!t) return 0;
+  const qty = Number(item.quantity) || 1;
   if (t.type === 'sqm') {
-    const sqm = (Number(o.width) * Number(o.height)) / 10000;
-    return sqm * t.price * Number(o.quantity);
+    const sqm = (Number(item.width) * Number(item.height)) / 10000;
+    return sqm * t.price * qty;
   }
-  return t.price * Number(o.quantity);
+  if (t.type === 'pm') {
+    const pm = Number(item.length) / 100;
+    return pm * t.price * qty;
+  }
+  if (t.type === 'hour') {
+    return Number(item.hours) * t.price * qty;
+  }
+  return 0;
 }
+
+function calcOrderPrice(o) {
+  return (o.items || []).reduce((s, item) => s + calcItemPrice(item), 0);
+}
+
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -574,7 +614,6 @@ function toast(msg) {
   t._t = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ============ THEME ============
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem(LS_THEME, theme);
@@ -591,7 +630,6 @@ document.getElementById('themeBtn').onclick = () => {
   applyTheme(cur === 'dark' ? 'light' : 'dark');
 };
 
-// ============ TABS ============
 document.querySelectorAll('.tab').forEach(t => {
   t.onclick = () => switchView(t.dataset.view);
 });
@@ -606,7 +644,6 @@ function switchView(v) {
   window.scrollTo(0, 0);
 }
 
-// ============ HOME ============
 function renderHome() {
   const today = todayStr();
   const todayOrders = orders.filter(o => o.date === today);
@@ -631,15 +668,13 @@ function renderHome() {
 }
 
 function orderItemHtml(o) {
-  const t = tariffs.find(x => x.id === o.tariffId);
   const price = calcOrderPrice(o);
   const initial = (o.name || '?').charAt(0).toUpperCase();
+  const itemsCount = (o.items || []).length;
   const meta = [
     '№ ' + (o.number || '—'),
-    o.width && o.height ? `${o.width}×${o.height} см` : null,
-    t ? t.name : '—',
-    o.quantity > 1 ? `×${o.quantity}` : null
-  ].filter(Boolean).join(' • ');
+    itemsCount + ' ' + plural(itemsCount, 'операция', 'операции', 'операций')
+  ].join(' • ');
   return `<div class="order-item" data-id="${o.id}">
     <div class="order-icon">${initial}</div>
     <div class="order-info">
@@ -661,7 +696,6 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// ============ CALENDAR ============
 const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const WEEKDAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
 
@@ -670,7 +704,7 @@ function renderCalendar() {
   document.getElementById('calTitle').textContent = MONTHS[m] + ' ' + y;
   
   const first = new Date(y, m, 1);
-  let startDay = first.getDay() - 1; if (startDay < 0) startDay = 6; // Mon=0
+  let startDay = first.getDay() - 1; if (startDay < 0) startDay = 6;
   const daysInMonth = new Date(y, m+1, 0).getDate();
   const prevDays = new Date(y, m, 0).getDate();
   
@@ -740,7 +774,6 @@ document.getElementById('prevMonth').onclick = () => { calDate.setMonth(calDate.
 document.getElementById('nextMonth').onclick = () => { calDate.setMonth(calDate.getMonth()+1); renderCalendar(); };
 document.getElementById('backToCal').onclick = () => { renderCalendar(); showCalendarList(); };
 
-// ============ TARIFFS ============
 function renderTariffs() {
   const box = document.getElementById('tariffList');
   if (tariffs.length === 0) {
@@ -748,14 +781,14 @@ function renderTariffs() {
     return;
   }
   box.innerHTML = tariffs.map(t => {
-    const typeLabel = t.type === 'sqm' ? '₽/м²' : '₽/шт';
+    const unitLabel = t.type === 'sqm' ? '₽/м²' : t.type === 'pm' ? '₽/пм' : '₽/час';
     return `<div class="tariff-item">
       <div class="tariff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
       <div class="tariff-info">
         <div class="tariff-name">${escapeHtml(t.name)}</div>
-        <div class="tariff-meta">${t.type === 'sqm' ? 'По площади' : 'За штуку'}</div>
+        <div class="tariff-meta">${t.type === 'sqm' ? 'По площади' : t.type === 'pm' ? 'Погонный метр' : 'За час'}</div>
       </div>
-      <div class="tariff-price">${fmtMoney(t.price)} <span style="color:var(--text-3);font-weight:400;font-size:12px">${typeLabel}</span></div>
+      <div class="tariff-price">${fmtMoney(t.price)} <span style="color:var(--text-3);font-weight:400;font-size:12px">${unitLabel}</span></div>
       <div class="tariff-actions">
         <button class="mini-btn" data-edit="${t.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
         <button class="mini-btn danger" data-del="${t.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
@@ -767,7 +800,7 @@ function renderTariffs() {
 }
 
 function deleteTariff(id) {
-  const used = orders.some(o => o.tariffId === id);
+  const used = orders.some(o => (o.items || []).some(item => item.tariffId === id));
   if (used) { toast('Тариф используется в заказах'); return; }
   if (!confirm('Удалить тариф?')) return;
   tariffs = tariffs.filter(t => t.id !== id);
@@ -775,7 +808,6 @@ function deleteTariff(id) {
   toast('Тариф удалён');
 }
 
-// ============ ORDER MODAL ============
 const orderModal = document.getElementById('orderModal');
 const fabAdd = document.getElementById('fabAdd');
 
@@ -785,31 +817,19 @@ function openOrderModal(orderId = null) {
   editingOrderId = orderId;
   document.getElementById('orderModalTitle').textContent = orderId ? 'Редактировать заказ' : 'Новый заказ';
   
-  // Fill tariff select
-  const sel = document.getElementById('fTariff');
-  if (tariffs.length === 0) {
-    sel.innerHTML = '<option value="">Сначала создай тариф</option>';
-  } else {
-    sel.innerHTML = tariffs.map(t => `<option value="${t.id}">${escapeHtml(t.name)} — ${fmtMoney(t.price)}/${t.type==='sqm'?'м²':'шт'}</option>`).join('');
-  }
-  
   if (orderId) {
     const o = orders.find(x => x.id === orderId);
     document.getElementById('fDate').value = o.date;
     document.getElementById('fNumber').value = o.number || '';
     document.getElementById('fName').value = o.name || '';
-    document.getElementById('fWidth').value = o.width || '';
-    document.getElementById('fHeight').value = o.height || '';
-    document.getElementById('fTariff').value = o.tariffId || '';
-    document.getElementById('fQty').value = o.quantity || 1;
+    currentItems = JSON.parse(JSON.stringify(o.items || []));
   } else {
     document.getElementById('fDate').value = selectedDay || todayStr();
     document.getElementById('fNumber').value = '';
     document.getElementById('fName').value = '';
-    document.getElementById('fWidth').value = '';
-    document.getElementById('fHeight').value = '';
-    document.getElementById('fQty').value = 1;
+    currentItems = [];
   }
+  renderItems();
   updatePricePreview();
   orderModal.classList.add('show');
 }
@@ -818,44 +838,134 @@ function closeOrderModal() { orderModal.classList.remove('show'); editingOrderId
 document.getElementById('cancelOrder').onclick = closeOrderModal;
 orderModal.onclick = e => { if (e.target === orderModal) closeOrderModal(); };
 
-['fTariff','fWidth','fHeight','fQty'].forEach(id => {
-  document.getElementById(id).addEventListener('input', updatePricePreview);
-});
+document.getElementById('addItemBtn').onclick = () => {
+  currentItems.push({
+    id: uid(),
+    tariffId: tariffs.length > 0 ? tariffs[0].id : '',
+    width: '',
+    height: '',
+    length: '',
+    hours: '',
+    quantity: 1
+  });
+  renderItems();
+  updatePricePreview();
+};
+
+function renderItems() {
+  const box = document.getElementById('itemsList');
+  if (currentItems.length === 0) {
+    box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-2);font-size:13px">Добавь хотя бы одну операцию</div>';
+    return;
+  }
+  
+  box.innerHTML = currentItems.map((item, idx) => {
+    const t = tariffs.find(x => x.id === item.tariffId);
+    let fieldsHtml = '';
+    
+    if (t) {
+      if (t.type === 'sqm') {
+        fieldsHtml = `
+          <div class="row-2">
+            <div class="field" style="margin-bottom:8px">
+              <label class="field-label">Ширина, см</label>
+              <input type="number" class="input" data-idx="${idx}" data-field="width" value="${item.width || ''}" placeholder="0" min="0" step="0.1">
+            </div>
+            <div class="field" style="margin-bottom:8px">
+              <label class="field-label">Высота, см</label>
+              <input type="number" class="input" data-idx="${idx}" data-field="height" value="${item.height || ''}" placeholder="0" min="0" step="0.1">
+            </div>
+          </div>
+        `;
+      } else if (t.type === 'pm') {
+        fieldsHtml = `
+          <div class="field" style="margin-bottom:8px">
+            <label class="field-label">Длина, см</label>
+            <input type="number" class="input" data-idx="${idx}" data-field="length" value="${item.length || ''}" placeholder="0" min="0" step="0.1">
+          </div>
+        `;
+      } else if (t.type === 'hour') {
+        fieldsHtml = `
+          <div class="field" style="margin-bottom:8px">
+            <label class="field-label">Часы</label>
+            <input type="number" class="input" data-idx="${idx}" data-field="hours" value="${item.hours || ''}" placeholder="0" min="0" step="0.1">
+          </div>
+        `;
+      }
+    }
+    
+    const price = calcItemPrice(item);
+    
+    return `
+      <div class="item-card">
+        <button class="item-remove" data-remove="${idx}">×</button>
+        <div class="field" style="margin-bottom:8px">
+          <label class="field-label">Тариф</label>
+          <select class="select" data-idx="${idx}" data-field="tariffId">
+            ${tariffs.map(t => `<option value="${t.id}" ${t.id === item.tariffId ? 'selected' : ''}>${escapeHtml(t.name)} — ${fmtMoney(t.price)}/${t.type==='sqm'?'м²':t.type==='pm'?'пм':'час'}</option>`).join('')}
+          </select>
+        </div>
+        ${fieldsHtml}
+        <div class="field" style="margin-bottom:0">
+          <label class="field-label">Количество</label>
+          <input type="number" class="input" data-idx="${idx}" data-field="quantity" value="${item.quantity || 1}" min="1" step="1">
+        </div>
+        <div class="item-price">${fmtMoney(price)}</div>
+      </div>
+    `;
+  }).join('');
+  
+  box.querySelectorAll('[data-remove]').forEach(btn => {
+    btn.onclick = () => {
+      currentItems.splice(parseInt(btn.dataset.remove), 1);
+      renderItems();
+      updatePricePreview();
+    };
+  });
+  
+  box.querySelectorAll('input, select').forEach(input => {
+    input.oninput = () => {
+      const idx = parseInt(input.dataset.idx);
+      const field = input.dataset.field;
+      currentItems[idx][field] = input.value;
+      updatePricePreview();
+      if (field === 'tariffId') renderItems();
+    };
+  });
+}
 
 function updatePricePreview() {
-  const tariffId = document.getElementById('fTariff').value;
-  const w = parseFloat(document.getElementById('fWidth').value) || 0;
-  const h = parseFloat(document.getElementById('fHeight').value) || 0;
-  const q = parseInt(document.getElementById('fQty').value) || 1;
-  const t = tariffs.find(x => x.id === tariffId);
-  let price = 0;
-  if (t) {
-    if (t.type === 'sqm') price = (w * h / 10000) * t.price * q;
-    else price = t.price * q;
-  }
-  document.getElementById('pricePreview').textContent = fmtMoney(price);
+  const total = currentItems.reduce((s, item) => s + calcItemPrice(item), 0);
+  document.getElementById('pricePreview').textContent = fmtMoney(total);
 }
 
 document.getElementById('saveOrder').onclick = () => {
   const date = document.getElementById('fDate').value;
   const number = document.getElementById('fNumber').value.trim();
   const name = document.getElementById('fName').value.trim();
-  const width = parseFloat(document.getElementById('fWidth').value) || 0;
-  const height = parseFloat(document.getElementById('fHeight').value) || 0;
-  const tariffId = document.getElementById('fTariff').value;
-  const quantity = parseInt(document.getElementById('fQty').value) || 1;
   
   if (!date) { toast('Укажи дату'); return; }
-  if (!tariffId) { toast('Выбери тариф'); return; }
   if (!name && !number) { toast('Укажи название или номер'); return; }
+  if (currentItems.length === 0) { toast('Добавь хотя бы одну операцию'); return; }
+  
+  const validItems = currentItems.filter(item => {
+    const t = tariffs.find(x => x.id === item.tariffId);
+    if (!t) return false;
+    if (t.type === 'sqm' && (!item.width || !item.height)) return false;
+    if (t.type === 'pm' && !item.length) return false;
+    if (t.type === 'hour' && !item.hours) return false;
+    return true;
+  });
+  
+  if (validItems.length === 0) { toast('Заполни размеры для всех операций'); return; }
   
   if (editingOrderId) {
     const o = orders.find(x => x.id === editingOrderId);
-    Object.assign(o, { date, number, name, width, height, tariffId, quantity });
+    Object.assign(o, { date, number, name, items: validItems });
     toast('Заказ обновлён');
   } else {
     orders.push({
-      id: uid(), date, number, name, width, height, tariffId, quantity,
+      id: uid(), date, number, name, items: validItems,
       createdAt: Date.now()
     });
     toast('Заказ создан');
@@ -873,16 +983,33 @@ function refreshCurrentView() {
   }
 }
 
-// ============ DETAIL MODAL ============
 const detailModal = document.getElementById('detailModal');
 function openDetail(id) {
   currentDetailId = id;
   const o = orders.find(x => x.id === id);
   if (!o) return;
-  const t = tariffs.find(x => x.id === o.tariffId);
   const price = calcOrderPrice(o);
   const d = new Date(o.date);
   const dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getFullYear();
+  
+  let itemsHtml = (o.items || []).map(item => {
+    const t = tariffs.find(x => x.id === item.tariffId);
+    if (!t) return '';
+    let sizeStr = '';
+    if (t.type === 'sqm') sizeStr = `${item.width}×${item.height} см`;
+    else if (t.type === 'pm') sizeStr = `${item.length} см`;
+    else if (t.type === 'hour') sizeStr = `${item.hours} ч`;
+    const itemPrice = calcItemPrice(item);
+    return `
+      <div style="padding:10px;background:var(--card-2);border-radius:10px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:600;font-size:14px">${escapeHtml(t.name)}</div>
+          <div style="font-weight:700;color:var(--green)">${fmtMoney(itemPrice)}</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-2);margin-top:4px">${sizeStr} • ×${item.quantity}</div>
+      </div>
+    `;
+  }).join('');
   
   let html = `
     <div style="display:flex;gap:12px;margin-bottom:16px">
@@ -892,14 +1019,16 @@ function openDetail(id) {
         <div style="color:var(--text-2);font-size:13px;margin-top:2px">${dateStr}</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <div class="price-preview" style="margin:0"><span class="price-preview-label">Номер</span><span style="font-weight:700">${escapeHtml(o.number || '—')}</span></div>
-      <div class="price-preview" style="margin:0"><span class="price-preview-label">Кол-во</span><span style="font-weight:700">${o.quantity}</span></div>
-      <div class="price-preview" style="margin:0"><span class="price-preview-label">Размер</span><span style="font-weight:700">${o.width && o.height ? o.width+'×'+o.height+' см' : '—'}</span></div>
-      <div class="price-preview" style="margin:0"><span class="price-preview-label">Тариф</span><span style="font-weight:700">${t ? escapeHtml(t.name) : '—'}</span></div>
+    <div class="price-preview" style="margin-bottom:12px">
+      <span class="price-preview-label">Номер заказа</span>
+      <span style="font-weight:700">${escapeHtml(o.number || '—')}</span>
     </div>
-    <div class="price-preview" style="margin-top:12px;background:linear-gradient(135deg,rgba(46,213,115,0.1),rgba(46,213,115,0.05))">
-      <span class="price-preview-label">Сумма</span>
+    <div style="margin-bottom:12px">
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Операции</div>
+      ${itemsHtml}
+    </div>
+    <div class="price-preview" style="background:linear-gradient(135deg,rgba(46,213,115,0.1),rgba(46,213,115,0.05))">
+      <span class="price-preview-label">Итого</span>
       <span class="price-preview-value" style="color:var(--green)">${fmtMoney(price)}</span>
     </div>
   `;
@@ -917,7 +1046,6 @@ document.getElementById('deleteOrder').onclick = () => {
   refreshCurrentView();
 };
 
-// ============ TARIFF MODAL ============
 const tariffModal = document.getElementById('tariffModal');
 function openTariffModal(id = null) {
   editingTariffId = id;
@@ -929,7 +1057,7 @@ function openTariffModal(id = null) {
     document.getElementById('tPrice').value = t.price;
   } else {
     document.getElementById('tName').value = '';
-    document.getElementById('tType').value = 'unit';
+    document.getElementById('tType').value = 'sqm';
     document.getElementById('tPrice').value = '';
   }
   tariffModal.classList.add('show');
@@ -958,7 +1086,6 @@ document.getElementById('saveTariff').onclick = () => {
   renderTariffs();
 };
 
-// ============ EXPORT / IMPORT ============
 document.getElementById('exportBtn').onclick = () => {
   const data = { orders, tariffs, exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -995,10 +1122,8 @@ document.getElementById('importFile').onchange = e => {
   e.target.value = '';
 };
 
-// ============ INIT ============
 renderHome();
 
-// Auto-update at midnight
 function scheduleNextDay() {
   const now = new Date();
   const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
