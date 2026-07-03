@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0d0d12">
+<title>Табель</title>
+<style>
+  :root {
+    --bg: #0d0d12;
+    --bg-2: #15151d;
+    --card: #1a1a24;
+    --card-2: #22222e;
+    --text: #ffffff;
+    --text-2: #9a9aa8;
+    --text-3: #5c5c6a;
+    --accent: #FFD60A;
+    --accent-2: #FFC400;
+    --green: #2ED573;
+    --red: #FF4757;
+    --border: rgba(255,255,255,0.06);
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  [data-theme="light"] {
+    --bg: #f5f5f7;
+    --bg-2: #ffffff;
+    --card: #ffffff;
+    --card-2: #f0f0f3;
+    --text: #0d0d12;
+    --text-2: #6b6b78;
+    --text-3: #9a9aa8;
+    --border: rgba(0,0,0,0.08);
+    --shadow: 0 8px 32px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.4;
+    overflow-x: hidden;
+    padding-bottom: 90px;
+    transition: background 0.3s, color 0.3s;
+  }
+  .app { max-width: 520px; margin: 0 auto; padding: 16px 16px 0; }
+  
+  /* Header */
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0 20px;
+  }
+  .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent); }
+  .header-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover { background: var(--card-2); }
+  .icon-btn svg { width: 20px; height: 20px; }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+  .balance-card {
+    background: linear-gradient(135deg, #1f1f2e 0%, #15151d 100%);
+    position: relative; overflow: hidden;
+  }
+  [data-theme="light"] .balance-card {
+    background: linear-gradient(135deg, #FFD60A 0%, #FFC400 100%);
+    color: #0d0d12;
+  }
+  .balance-card::before {
+    content: ''; position: absolute; top: -50%; right: -20%;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,214,10,0.15) 0%, transparent 70%);
+  }
+  .balance-label {
+    font-size: 13px; color: var(--text-2);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+    position: relative;
+  }
+  [data-theme="light"] .balance-label { color: rgba(13,13,18,0.6); }
+  .balance-value {
+    font-size: 38px; font-weight: 800; letter-spacing: -1px;
+    position: relative; margin-bottom: 4px;
+  }
+  .balance-sub {
+    font-size: 13px; color: var(--text-2);
+    position: relative;
+  }
+  [data-theme="light"] .balance-sub { color: rgba(13,13,18,0.6); }
+  .balance-row { display: flex; gap: 12px; margin-top: 16px; position: relative; }
+  .balance-stat {
+    flex: 1; padding: 12px; border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+  }
+  [data-theme="light"] .balance-stat { background: rgba(13,13,18,0.08); }
+  .balance-stat-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; }
+  [data-theme="light"] .balance-stat-label { color: rgba(13,13,18,0.6); }
+  .balance-stat-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+
+  /* Section */
+  .section-title {
+    font-size: 13px; color: var(--text-2); text-transform: uppercase;
+    letter-spacing: 0.8px; margin: 20px 4px 10px; font-weight: 600;
+  }
+
+  /* Orders list */
+  .order-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px; background: var(--card);
+    border-radius: 16px; margin-bottom: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .order-item:hover { background: var(--card-2); transform: translateY(-1px); }
+  .order-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: flex; align-items: center; justify-content: center;
+    color: #0d0d12; font-weight: 800; font-size: 16px;
+    flex-shrink: 0;
+  }
+  .order-info { flex: 1; min-width: 0; }
+  .order-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .order-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+  .order-price { font-weight: 700; font-size: 16px; color: var(--green); flex-shrink: 0; }
+
+  .empty {
+    text-align: center; padding: 40px 20px; color: var(--text-2);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+  .empty-text { font-size: 14px; }
+
+  /* Calendar */
+  .cal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .cal-title { font-size: 18px; font-weight: 700; text-transform: capitalize; }
+  .cal-nav { display: flex; gap: 6px; }
+  .cal-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+  }
+  .cal-weekday {
+    text-align: center; font-size: 11px; color: var(--text-3);
+    padding: 8px 0; font-weight: 600; text-transform: uppercase;
+  }
+  .cal-day {
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border-radius: 12px; cursor: pointer; position: relative;
+    font-size: 14px; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .cal-day:hover { background: var(--card-2); }
+  .cal-day.other { color: var(--text-3); opacity: 0.4; }
+  .cal-day.today { background: var(--card-2); color: var(--accent); font-weight: 700; }
+  .cal-day.selected { background: var(--accent); color: #0d0d12; font-weight: 700; }
+  .cal-day.has-orders::after {
+    content: ''; position: absolute; bottom: 6px;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .cal-day.selected.has-orders::after { background: #0d0d12; }
+
+  /* Tabs */
+  .tabs {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 100;
+  }
+  [data-theme="light"] .tabs { background: rgba(255,255,255,0.85); }
+  .tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    gap: 4px; padding: 8px 4px; cursor: pointer;
+    color: var(--text-3); transition: color 0.2s;
+    background: none; border: none; font-family: inherit;
+  }
+  .tab svg { width: 24px; height: 24px; }
+  .tab-label { font-size: 10px; font-weight: 600; }
+  .tab.active { color: var(--accent); }
+
+  /* FAB */
+  .fab {
+    position: fixed; bottom: 90px; right: 20px;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent); color: #0d0d12;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(255,214,10,0.4);
+    z-index: 99; transition: all 0.2s;
+  }
+  .fab:hover { transform: scale(1.05); }
+  .fab:active { transform: scale(0.95); }
+  .fab svg { width: 28px; height: 28px; }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 200; display: none;
+    align-items: flex-end; justify-content: center;
+    animation: fadeIn 0.2s;
+  }
+  .modal-bg.show { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal {
+    background: var(--bg-2);
+    width: 100%; max-width: 520px;
+    border-radius: 24px 24px 0 0;
+    padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+    max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-handle {
+    width: 40px; height: 4px; border-radius: 2px;
+    background: var(--text-3); margin: 0 auto 16px; opacity: 0.5;
+  }
+  .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; }
+  
+  .field { margin-bottom: 14px; }
+  .field-label {
+    display: block; font-size: 12px; color: var(--text-2);
+    margin-bottom: 6px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .input, .select {
+    width: 100%; padding: 14px 16px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; color: var(--text);
+    font-size: 15px; font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .input:focus, .select:focus { outline: none; border-color: var(--accent); }
+  .select { appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9aa8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center;
+    padding-right: 40px;
+  }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  
+  .btn {
+    width: 100%; padding: 16px;
+    background: var(--accent); color: #0d0d12;
+    border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn:hover { background: var(--accent-2); }
+  .btn:active { transform: scale(0.98); }
+  .btn-secondary {
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-danger { background: var(--red); color: white; }
+
+  /* Tariffs */
+  .tariff-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px; background: var(--card);
+    border-radius: 16px; margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+  .tariff-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--card-2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent); flex-shrink: 0;
+  }
+  .tariff-info { flex: 1; min-width: 0; }
+  .tariff-name { font-weight: 600; font-size: 15px; }
+  .tariff-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+  .tariff-price { font-weight: 700; color: var(--accent); }
+  .tariff-actions { display: flex; gap: 4px; }
+  .mini-btn {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--card-2); border: none; cursor: pointer;
+    color: var(--text-2); display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .mini-btn:hover { color: var(--text); }
+  .mini-btn.danger:hover { color: var(--red); }
+  .mini-btn svg { width: 16px; height: 16px; }
+
+  /* Day view */
+  .day-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .day-total {
+    padding: 8px 14px; background: var(--card-2);
+    border-radius: 12px; font-weight: 700; color: var(--green);
+  }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: none; color: var(--accent);
+    cursor: pointer; font-size: 14px; font-weight: 600;
+    padding: 8px 0; margin-bottom: 12px; font-family: inherit;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--card); color: var(--text);
+    padding: 12px 20px; border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    z-index: 300; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    font-weight: 600; font-size: 14px;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .view { display: none; animation: fadeIn 0.25s; }
+  .view.active { display: block; }
+
+  .price-preview {
+    padding: 14px; background: var(--card-2);
+    border-radius: 14px; margin-top: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .price-preview-label { color: var(--text-2); font-size: 13px; }
+  .price-preview-value { font-size: 20px; font-weight: 800; color: var(--accent); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">Табель<span>.</span></div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" title="Тема">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" id="exportBtn" title="Экспорт">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="icon-btn" id="importBtn" title="Импорт">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <div class="card balance-card">
+      <div class="balance-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Сегодня
+      </div>
+      <div class="balance-value" id="todaySum">0 ₽</div>
+      <div class="balance-sub" id="todayCount">0 заказов</div>
+      <div class="balance-row">
+        <div class="balance-stat">
+          <div class="balance-stat-label">Всего</div>
+          <div class="balance-stat-value" id="totalSum">0 ₽</div>
+        </div>
+        <div class="balance-stat">
+          <div class="balance-stat-label">Заказов</div>
+          <div class="balance-stat-value" id="totalCount">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Последние заказы</div>
+    <div id="recentOrders"></div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="view" id="view-calendar">
+    <div id="calendarView">
+      <div class="card">
+        <div class="cal-header">
+          <button class="icon-btn" id="prevMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="cal-title" id="calTitle"></div>
+          <button class="icon-btn" id="nextMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </div>
+    <div id="dayView" style="display:none">
+      <button class="back-btn" id="backToCal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Календарь
+      </button>
+      <div class="day-header">
+        <div class="cal-title" id="dayTitle"></div>
+        <div class="day-total" id="dayTotal">0 ₽</div>
+      </div>
+      <div id="dayOrders"></div>
+    </div>
+  </div>
+
+  <!-- TARIFFS -->
+  <div class="view" id="view-tariffs">
+    <div class="section-title">Тарифы на операции</div>
+    <div id="tariffList"></div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fabAdd">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" data-view="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="tab-label">Главная</span>
+  </button>
+  <button class="tab" data-view="calendar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="tab-label">Календарь</span>
+  </button>
+  <button class="tab" data-view="tariffs">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    <span class="tab-label">Тарифы</span>
+  </button>
+</div>
+
+<!-- Modal: New Order -->
+<div class="modal-bg" id="orderModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="orderModalTitle">Новый заказ</div>
+    <div class="field">
+      <label class="field-label">Дата</label>
+      <input type="date" class="input" id="fDate">
+    </div>
+    <div class="field">
+      <label class="field-label">Номер заказа</label>
+      <input type="text" class="input" id="fNumber" placeholder="Например: 2026-0042">
+    </div>
+    <div class="field">
+      <label class="field-label">Название изделия</label>
+      <input type="text" class="input" id="fName" placeholder="Например: Стол обеденный">
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label class="field-label">Ширина, см</label>
+        <input type="number" class="input" id="fWidth" placeholder="0" min="0" step="0.1">
+      </div>
+      <div class="field">
+        <label class="field-label">Высота, см</label>
+        <input type="number" class="input" id="fHeight" placeholder="0" min="0" step="0.1">
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Тариф</label>
+      <select class="select" id="fTariff"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">Количество</label>
+      <input type="number" class="input" id="fQty" value="1" min="1" step="1">
+    </div>
+    <div class="price-preview">
+      <span class="price-preview-label">Итого</span>
+      <span class="price-preview-value" id="pricePreview">0 ₽</span>
+    </div>
+    <button class="btn" id="saveOrder">Сохранить</button>
+    <button class="btn btn-secondary" id="cancelOrder" style="margin-top:8px">Отмена</button>
+  </div>
+</div>
+
+<!-- Modal: Tariff -->
+<div class="modal-bg" id="tariffModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="tariffModalTitle">Новый тариф</div>
+    <div class="field">
+      <label class="field-label">Название операции</label>
+      <input type="text" class="input" id="tName" placeholder="Например: Покраска">
+    </div>
+    <div class="field">
+      <label class="field-label">Тип расчёта</label>
+      <select class="select" id="tType">
+        <option value="unit">За штуку (фикс. цена)</option>
+        <option value="sqm">За м² (по площади)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label">Цена, ₽</label>
+      <input type="number" class="input" id="tPrice" placeholder="0" min="0" step="0.01">
+    </div>
+    <button class="btn" id="saveTariff">Сохранить</button>
+    <button class="btn btn-secondary" id="cancelTariff" style="margin-top:8px">Отмена</button>
+  </div>
+</div>
+
+<!-- Modal: Order Details -->
+<div class="modal-bg" id="detailModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Заказ</div>
+    <div id="detailContent"></div>
+    <button class="btn btn-danger" id="deleteOrder" style="margin-top:12px">Удалить заказ</button>
+    <button class="btn btn-secondary" id="closeDetail" style="margin-top:8px">Закрыть</button>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept=".json" style="display:none">
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ STATE ============
+const LS_ORDERS = 'tabel_orders_v1';
+const LS_TARIFFS = 'tabel_tariffs_v1';
+const LS_THEME = 'tabel_theme_v1';
+
+let orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
+let tariffs = JSON.parse(localStorage.getItem(LS_TARIFFS) || '[]');
+let currentView = 'home';
+let calDate = new Date();
+let selectedDay = null;
+let editingOrderId = null;
+let editingTariffId = null;
+let currentDetailId = null;
+
+// Seed default tariffs if empty
+if (tariffs.length === 0) {
+  tariffs = [
+    { id: uid(), name: 'Сборка', type: 'unit', price: 500 },
+    { id: uid(), name: 'Покраска', type: 'sqm', price: 350 }
+  ];
+  saveTariffs();
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function saveOrders() { localStorage.setItem(LS_ORDERS, JSON.stringify(orders)); }
+function saveTariffs() { localStorage.setItem(LS_TARIFFS, JSON.stringify(tariffs)); }
+function fmtMoney(n) { return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽'; }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function calcOrderPrice(o) {
+  const t = tariffs.find(x => x.id === o.tariffId);
+  if (!t) return 0;
+  if (t.type === 'sqm') {
+    const sqm = (Number(o.width) * Number(o.height)) / 10000;
+    return sqm * t.price * Number(o.quantity);
+  }
+  return t.price * Number(o.quantity);
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ============ THEME ============
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(LS_THEME, theme);
+  const icon = document.getElementById('themeIcon');
+  if (theme === 'light') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+}
+applyTheme(localStorage.getItem(LS_THEME) || 'dark');
+document.getElementById('themeBtn').onclick = () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+};
+
+// ============ TABS ============
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => switchView(t.dataset.view);
+});
+function switchView(v) {
+  currentView = v;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === v));
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  if (v === 'home') renderHome();
+  if (v === 'calendar') { renderCalendar(); showCalendarList(); }
+  if (v === 'tariffs') renderTariffs();
+  window.scrollTo(0, 0);
+}
+
+// ============ HOME ============
+function renderHome() {
+  const today = todayStr();
+  const todayOrders = orders.filter(o => o.date === today);
+  const todaySum = todayOrders.reduce((s, o) => s + calcOrderPrice(o), 0);
+  const totalSum = orders.reduce((s, o) => s + calcOrderPrice(o), 0);
+  
+  document.getElementById('todaySum').textContent = fmtMoney(todaySum);
+  document.getElementById('todayCount').textContent = plural(todayOrders.length, 'заказ', 'заказа', 'заказов');
+  document.getElementById('totalSum').textContent = fmtMoney(totalSum);
+  document.getElementById('totalCount').textContent = orders.length;
+
+  const recent = [...orders].sort((a,b) => (b.createdAt||0) - (a.createdAt||0)).slice(0, 8);
+  const box = document.getElementById('recentOrders');
+  if (recent.length === 0) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Пока нет заказов.<br>Нажми + чтобы добавить первый</div></div>';
+    return;
+  }
+  box.innerHTML = recent.map(o => orderItemHtml(o)).join('');
+  box.querySelectorAll('[data-id]').forEach(el => {
+    el.onclick = () => openDetail(el.dataset.id);
+  });
+}
+
+function orderItemHtml(o) {
+  const t = tariffs.find(x => x.id === o.tariffId);
+  const price = calcOrderPrice(o);
+  const initial = (o.name || '?').charAt(0).toUpperCase();
+  const meta = [
+    '№ ' + (o.number || '—'),
+    o.width && o.height ? `${o.width}×${o.height} см` : null,
+    t ? t.name : '—',
+    o.quantity > 1 ? `×${o.quantity}` : null
+  ].filter(Boolean).join(' • ');
+  return `<div class="order-item" data-id="${o.id}">
+    <div class="order-icon">${initial}</div>
+    <div class="order-info">
+      <div class="order-name">${escapeHtml(o.name || 'Без названия')}</div>
+      <div class="order-meta">${escapeHtml(meta)}</div>
+    </div>
+    <div class="order-price">+${fmtMoney(price)}</div>
+  </div>`;
+}
+
+function plural(n, one, two, five) {
+  n = Math.abs(n) % 100; const n1 = n % 10;
+  if (n > 10 && n < 20) return five;
+  if (n1 > 1 && n1 < 5) return two;
+  if (n1 === 1) return one;
+  return five;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ CALENDAR ============
+const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const WEEKDAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+function renderCalendar() {
+  const y = calDate.getFullYear(), m = calDate.getMonth();
+  document.getElementById('calTitle').textContent = MONTHS[m] + ' ' + y;
+  
+  const first = new Date(y, m, 1);
+  let startDay = first.getDay() - 1; if (startDay < 0) startDay = 6; // Mon=0
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const prevDays = new Date(y, m, 0).getDate();
+  
+  const today = todayStr();
+  const ordersByDate = {};
+  orders.forEach(o => { ordersByDate[o.date] = (ordersByDate[o.date]||0) + 1; });
+  
+  let html = WEEKDAYS.map(w => `<div class="cal-weekday">${w}</div>`).join('');
+  
+  for (let i = startDay - 1; i >= 0; i--) {
+    html += `<div class="cal-day other">${prevDays - i}</div>`;
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const classes = ['cal-day'];
+    if (ds === today) classes.push('today');
+    if (selectedDay === ds) classes.push('selected');
+    if (ordersByDate[ds]) classes.push('has-orders');
+    html += `<div class="${classes.join(' ')}" data-date="${ds}">${d}</div>`;
+  }
+  const total = startDay + daysInMonth;
+  const tail = (7 - total % 7) % 7;
+  for (let i = 1; i <= tail; i++) {
+    html += `<div class="cal-day other">${i}</div>`;
+  }
+  
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = html;
+  grid.querySelectorAll('.cal-day:not(.other)').forEach(el => {
+    el.onclick = () => {
+      selectedDay = el.dataset.date;
+      renderCalendar();
+      showDayView(selectedDay);
+    };
+  });
+}
+
+function showCalendarList() {
+  document.getElementById('calendarView').style.display = '';
+  document.getElementById('dayView').style.display = 'none';
+  selectedDay = null;
+}
+
+function showDayView(dateStr) {
+  document.getElementById('calendarView').style.display = 'none';
+  document.getElementById('dayView').style.display = '';
+  const d = new Date(dateStr);
+  const fmt = d.getDate() + ' ' + MONTHS[d.getMonth()].toLowerCase();
+  document.getElementById('dayTitle').textContent = fmt;
+  
+  const dayOrders = orders.filter(o => o.date === dateStr).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  const sum = dayOrders.reduce((s,o) => s + calcOrderPrice(o), 0);
+  document.getElementById('dayTotal').textContent = fmtMoney(sum);
+  
+  const box = document.getElementById('dayOrders');
+  if (dayOrders.length === 0) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Заказов за этот день нет</div></div>';
+    return;
+  }
+  box.innerHTML = dayOrders.map(o => orderItemHtml(o)).join('');
+  box.querySelectorAll('[data-id]').forEach(el => {
+    el.onclick = () => openDetail(el.dataset.id);
+  });
+}
+
+document.getElementById('prevMonth').onclick = () => { calDate.setMonth(calDate.getMonth()-1); renderCalendar(); };
+document.getElementById('nextMonth').onclick = () => { calDate.setMonth(calDate.getMonth()+1); renderCalendar(); };
+document.getElementById('backToCal').onclick = () => { renderCalendar(); showCalendarList(); };
+
+// ============ TARIFFS ============
+function renderTariffs() {
+  const box = document.getElementById('tariffList');
+  if (tariffs.length === 0) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">Добавь первый тариф</div></div>';
+    return;
+  }
+  box.innerHTML = tariffs.map(t => {
+    const typeLabel = t.type === 'sqm' ? '₽/м²' : '₽/шт';
+    return `<div class="tariff-item">
+      <div class="tariff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <div class="tariff-info">
+        <div class="tariff-name">${escapeHtml(t.name)}</div>
+        <div class="tariff-meta">${t.type === 'sqm' ? 'По площади' : 'За штуку'}</div>
+      </div>
+      <div class="tariff-price">${fmtMoney(t.price)} <span style="color:var(--text-3);font-weight:400;font-size:12px">${typeLabel}</span></div>
+      <div class="tariff-actions">
+        <button class="mini-btn" data-edit="${t.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="mini-btn danger" data-del="${t.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+      </div>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openTariffModal(b.dataset.edit));
+  box.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteTariff(b.dataset.del));
+}
+
+function deleteTariff(id) {
+  const used = orders.some(o => o.tariffId === id);
+  if (used) { toast('Тариф используется в заказах'); return; }
+  if (!confirm('Удалить тариф?')) return;
+  tariffs = tariffs.filter(t => t.id !== id);
+  saveTariffs(); renderTariffs();
+  toast('Тариф удалён');
+}
+
+// ============ ORDER MODAL ============
+const orderModal = document.getElementById('orderModal');
+const fabAdd = document.getElementById('fabAdd');
+
+fabAdd.onclick = () => openOrderModal();
+
+function openOrderModal(orderId = null) {
+  editingOrderId = orderId;
+  document.getElementById('orderModalTitle').textContent = orderId ? 'Редактировать заказ' : 'Новый заказ';
+  
+  // Fill tariff select
+  const sel = document.getElementById('fTariff');
+  if (tariffs.length === 0) {
+    sel.innerHTML = '<option value="">Сначала создай тариф</option>';
+  } else {
+    sel.innerHTML = tariffs.map(t => `<option value="${t.id}">${escapeHtml(t.name)} — ${fmtMoney(t.price)}/${t.type==='sqm'?'м²':'шт'}</option>`).join('');
+  }
+  
+  if (orderId) {
+    const o = orders.find(x => x.id === orderId);
+    document.getElementById('fDate').value = o.date;
+    document.getElementById('fNumber').value = o.number || '';
+    document.getElementById('fName').value = o.name || '';
+    document.getElementById('fWidth').value = o.width || '';
+    document.getElementById('fHeight').value = o.height || '';
+    document.getElementById('fTariff').value = o.tariffId || '';
+    document.getElementById('fQty').value = o.quantity || 1;
+  } else {
+    document.getElementById('fDate').value = selectedDay || todayStr();
+    document.getElementById('fNumber').value = '';
+    document.getElementById('fName').value = '';
+    document.getElementById('fWidth').value = '';
+    document.getElementById('fHeight').value = '';
+    document.getElementById('fQty').value = 1;
+  }
+  updatePricePreview();
+  orderModal.classList.add('show');
+}
+
+function closeOrderModal() { orderModal.classList.remove('show'); editingOrderId = null; }
+document.getElementById('cancelOrder').onclick = closeOrderModal;
+orderModal.onclick = e => { if (e.target === orderModal) closeOrderModal(); };
+
+['fTariff','fWidth','fHeight','fQty'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updatePricePreview);
+});
+
+function updatePricePreview() {
+  const tariffId = document.getElementById('fTariff').value;
+  const w = parseFloat(document.getElementById('fWidth').value) || 0;
+  const h = parseFloat(document.getElementById('fHeight').value) || 0;
+  const q = parseInt(document.getElementById('fQty').value) || 1;
+  const t = tariffs.find(x => x.id === tariffId);
+  let price = 0;
+  if (t) {
+    if (t.type === 'sqm') price = (w * h / 10000) * t.price * q;
+    else price = t.price * q;
+  }
+  document.getElementById('pricePreview').textContent = fmtMoney(price);
+}
+
+document.getElementById('saveOrder').onclick = () => {
+  const date = document.getElementById('fDate').value;
+  const number = document.getElementById('fNumber').value.trim();
+  const name = document.getElementById('fName').value.trim();
+  const width = parseFloat(document.getElementById('fWidth').value) || 0;
+  const height = parseFloat(document.getElementById('fHeight').value) || 0;
+  const tariffId = document.getElementById('fTariff').value;
+  const quantity = parseInt(document.getElementById('fQty').value) || 1;
+  
+  if (!date) { toast('Укажи дату'); return; }
+  if (!tariffId) { toast('Выбери тариф'); return; }
+  if (!name && !number) { toast('Укажи название или номер'); return; }
+  
+  if (editingOrderId) {
+    const o = orders.find(x => x.id === editingOrderId);
+    Object.assign(o, { date, number, name, width, height, tariffId, quantity });
+    toast('Заказ обновлён');
+  } else {
+    orders.push({
+      id: uid(), date, number, name, width, height, tariffId, quantity,
+      createdAt: Date.now()
+    });
+    toast('Заказ создан');
+  }
+  saveOrders();
+  closeOrderModal();
+  refreshCurrentView();
+};
+
+function refreshCurrentView() {
+  if (currentView === 'home') renderHome();
+  if (currentView === 'calendar') {
+    renderCalendar();
+    if (selectedDay) showDayView(selectedDay);
+  }
+}
+
+// ============ DETAIL MODAL ============
+const detailModal = document.getElementById('detailModal');
+function openDetail(id) {
+  currentDetailId = id;
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const t = tariffs.find(x => x.id === o.tariffId);
+  const price = calcOrderPrice(o);
+  const d = new Date(o.date);
+  const dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getFullYear();
+  
+  let html = `
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <div class="order-icon" style="width:56px;height:56px;font-size:22px">${(o.name||'?').charAt(0).toUpperCase()}</div>
+      <div style="flex:1">
+        <div style="font-size:18px;font-weight:700">${escapeHtml(o.name || 'Без названия')}</div>
+        <div style="color:var(--text-2);font-size:13px;margin-top:2px">${dateStr}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="price-preview" style="margin:0"><span class="price-preview-label">Номер</span><span style="font-weight:700">${escapeHtml(o.number || '—')}</span></div>
+      <div class="price-preview" style="margin:0"><span class="price-preview-label">Кол-во</span><span style="font-weight:700">${o.quantity}</span></div>
+      <div class="price-preview" style="margin:0"><span class="price-preview-label">Размер</span><span style="font-weight:700">${o.width && o.height ? o.width+'×'+o.height+' см' : '—'}</span></div>
+      <div class="price-preview" style="margin:0"><span class="price-preview-label">Тариф</span><span style="font-weight:700">${t ? escapeHtml(t.name) : '—'}</span></div>
+    </div>
+    <div class="price-preview" style="margin-top:12px;background:linear-gradient(135deg,rgba(46,213,115,0.1),rgba(46,213,115,0.05))">
+      <span class="price-preview-label">Сумма</span>
+      <span class="price-preview-value" style="color:var(--green)">${fmtMoney(price)}</span>
+    </div>
+  `;
+  document.getElementById('detailContent').innerHTML = html;
+  detailModal.classList.add('show');
+}
+document.getElementById('closeDetail').onclick = () => detailModal.classList.remove('show');
+detailModal.onclick = e => { if (e.target === detailModal) detailModal.classList.remove('show'); };
+document.getElementById('deleteOrder').onclick = () => {
+  if (!confirm('Удалить заказ?')) return;
+  orders = orders.filter(o => o.id !== currentDetailId);
+  saveOrders();
+  detailModal.classList.remove('show');
+  toast('Заказ удалён');
+  refreshCurrentView();
+};
+
+// ============ TARIFF MODAL ============
+const tariffModal = document.getElementById('tariffModal');
+function openTariffModal(id = null) {
+  editingTariffId = id;
+  document.getElementById('tariffModalTitle').textContent = id ? 'Редактировать тариф' : 'Новый тариф';
+  if (id) {
+    const t = tariffs.find(x => x.id === id);
+    document.getElementById('tName').value = t.name;
+    document.getElementById('tType').value = t.type;
+    document.getElementById('tPrice').value = t.price;
+  } else {
+    document.getElementById('tName').value = '';
+    document.getElementById('tType').value = 'unit';
+    document.getElementById('tPrice').value = '';
+  }
+  tariffModal.classList.add('show');
+}
+function closeTariffModal() { tariffModal.classList.remove('show'); editingTariffId = null; }
+document.getElementById('cancelTariff').onclick = closeTariffModal;
+tariffModal.onclick = e => { if (e.target === tariffModal) closeTariffModal(); };
+
+document.getElementById('saveTariff').onclick = () => {
+  const name = document.getElementById('tName').value.trim();
+  const type = document.getElementById('tType').value;
+  const price = parseFloat(document.getElementById('tPrice').value);
+  if (!name) { toast('Укажи название'); return; }
+  if (!price || price <= 0) { toast('Укажи цену'); return; }
+  
+  if (editingTariffId) {
+    const t = tariffs.find(x => x.id === editingTariffId);
+    Object.assign(t, { name, type, price });
+    toast('Тариф обновлён');
+  } else {
+    tariffs.push({ id: uid(), name, type, price });
+    toast('Тариф создан');
+  }
+  saveTariffs();
+  closeTariffModal();
+  renderTariffs();
+};
+
+// ============ EXPORT / IMPORT ============
+document.getElementById('exportBtn').onclick = () => {
+  const data = { orders, tariffs, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tabel-backup-' + todayStr() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Бэкап сохранён');
+};
+
+document.getElementById('importBtn').onclick = () => document.getElementById('importFile').click();
+document.getElementById('importFile').onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data.orders || !data.tariffs) throw new Error('bad format');
+      if (!confirm(`Заменить текущие данные? Будет импортировано ${data.orders.length} заказов и ${data.tariffs.length} тарифов.`)) return;
+      orders = data.orders;
+      tariffs = data.tariffs;
+      saveOrders(); saveTariffs();
+      toast('Данные импортированы');
+      refreshCurrentView();
+      if (currentView === 'tariffs') renderTariffs();
+    } catch (err) {
+      toast('Ошибка файла');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+};
+
+// ============ INIT ============
+renderHome();
+
+// Auto-update at midnight
+function scheduleNextDay() {
+  const now = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const ms = tomorrow - now + 1000;
+  setTimeout(() => {
+    if (currentView === 'home') renderHome();
+    scheduleNextDay();
+  }, ms);
+}
+scheduleNextDay();
+</script>
+</body>
+</html>
