@@ -324,11 +324,78 @@
 
   .day-header {
     display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .day-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     margin-bottom: 16px;
   }
+  .day-stats-row {
+    display: flex;
+    gap: 8px;
+  }
   .day-total {
-    padding: 8px 14px; background: var(--card-2);
-    border-radius: 12px; font-weight: 700; color: var(--green);
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--card-2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .day-total-label {
+    font-size: 11px;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .day-total-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--green);
+  }
+  .day-units {
+    flex: 2;
+    padding: 12px 14px;
+    background: var(--card-2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .day-units-label {
+    font-size: 11px;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .day-units-value {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .unit-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--accent);
+  }
+  .unit-chip .unit-num {
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .unit-chip .unit-label {
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 500;
   }
   .back-btn {
     display: flex; align-items: center; gap: 6px;
@@ -483,7 +550,18 @@
       </button>
       <div class="day-header">
         <div class="cal-title" id="dayTitle"></div>
-        <div class="day-total" id="dayTotal">0 ₽</div>
+      </div>
+      <div class="day-stats">
+        <div class="day-stats-row">
+          <div class="day-total">
+            <div class="day-total-label">Сумма</div>
+            <div class="day-total-value" id="dayTotal">0 ₽</div>
+          </div>
+          <div class="day-units">
+            <div class="day-units-label">Объём работ</div>
+            <div class="day-units-value" id="dayUnits">—</div>
+          </div>
+        </div>
       </div>
       <div id="dayOrders"></div>
     </div>
@@ -627,6 +705,22 @@ function todayStr() {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
+function getItemUnits(item) {
+  const t = tariffs.find(x => x.id === item.tariffId);
+  if (!t) return { sqm: 0, pm: 0, hour: 0 };
+  const qty = Number(item.quantity) || 1;
+  if (t.type === 'sqm') {
+    return { sqm: (Number(item.width) * Number(item.height)) / 1000000 * qty, pm: 0, hour: 0 };
+  }
+  if (t.type === 'pm') {
+    return { sqm: 0, pm: Number(item.length) / 1000 * qty, hour: 0 };
+  }
+  if (t.type === 'hour') {
+    return { sqm: 0, pm: 0, hour: Number(item.hours) * qty };
+  }
+  return { sqm: 0, pm: 0, hour: 0 };
+}
+
 function calcItemPrice(item) {
   const t = tariffs.find(x => x.id === item.tariffId);
   if (!t) return 0;
@@ -647,6 +741,38 @@ function calcItemPrice(item) {
 
 function calcOrderPrice(o) {
   return (o.items || []).reduce((s, item) => s + calcItemPrice(item), 0);
+}
+
+function calcOrdersUnits(ordersList) {
+  let sqm = 0, pm = 0, hour = 0;
+  ordersList.forEach(o => {
+    (o.items || []).forEach(item => {
+      const u = getItemUnits(item);
+      sqm += u.sqm;
+      pm += u.pm;
+      hour += u.hour;
+    });
+  });
+  return { sqm, pm, hour };
+}
+
+function formatUnits(units) {
+  const parts = [];
+  if (units.sqm > 0) {
+    parts.push(`<span class="unit-chip"><span class="unit-num">${fmtNum(units.sqm, 2)}</span><span class="unit-label">м²</span></span>`);
+  }
+  if (units.pm > 0) {
+    parts.push(`<span class="unit-chip"><span class="unit-num">${fmtNum(units.pm, 2)}</span><span class="unit-label">пм</span></span>`);
+  }
+  if (units.hour > 0) {
+    parts.push(`<span class="unit-chip"><span class="unit-num">${fmtNum(units.hour, 1)}</span><span class="unit-label">ч</span></span>`);
+  }
+  return parts.length > 0 ? parts.join('') : '<span style="color:var(--text-3)">—</span>';
+}
+
+function fmtNum(n, digits) {
+  const rounded = Math.round(n * Math.pow(10, digits)) / Math.pow(10, digits);
+  return rounded.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: digits });
 }
 
 function toast(msg) {
@@ -820,7 +946,10 @@ function showDayView(dateStr) {
   
   const dayOrders = orders.filter(o => o.date === dateStr).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
   const sum = dayOrders.reduce((s,o) => s + calcOrderPrice(o), 0);
+  const units = calcOrdersUnits(dayOrders);
+  
   document.getElementById('dayTotal').textContent = fmtMoney(sum);
+  document.getElementById('dayUnits').innerHTML = formatUnits(units);
   
   const box = document.getElementById('dayOrders');
   if (dayOrders.length === 0) {
