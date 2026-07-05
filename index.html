@@ -113,6 +113,32 @@
     letter-spacing: 0.8px; margin: 20px 4px 10px; font-weight: 600;
   }
 
+  .search-box {
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 14px 16px 14px 44px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { outline: none; border-color: var(--accent); }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-3);
+    pointer-events: none;
+  }
+  .search-icon svg { width: 20px; height: 20px; }
+
   .order-item {
     display: flex; align-items: center; gap: 12px;
     padding: 14px; background: var(--card);
@@ -380,6 +406,13 @@
     color: var(--green);
   }
 
+  .detail-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -422,7 +455,13 @@
       </div>
     </div>
 
-    <div class="section-title">Последние заказы</div>
+    <div class="section-title">Заказы</div>
+    <div class="search-box">
+      <div class="search-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <input type="text" class="search-input" id="searchInput" placeholder="Поиск по номеру или названию">
+    </div>
     <div id="recentOrders"></div>
   </div>
 
@@ -539,7 +578,10 @@
     <div class="modal-handle"></div>
     <div class="modal-title">Заказ</div>
     <div id="detailContent"></div>
-    <button class="btn btn-danger" id="deleteOrder" style="margin-top:12px">Удалить заказ</button>
+    <div class="detail-actions">
+      <button class="btn btn-secondary" id="editOrder">Редактировать</button>
+      <button class="btn btn-danger" id="deleteOrder">Удалить</button>
+    </div>
     <button class="btn btn-secondary" id="closeDetail" style="margin-top:8px">Закрыть</button>
   </div>
 </div>
@@ -548,8 +590,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const LS_ORDERS = 'tabel_orders_v2';
-const LS_TARIFFS = 'tabel_tariffs_v2';
+const LS_ORDERS = 'tabel_orders_v3';
+const LS_TARIFFS = 'tabel_tariffs_v3';
 const LS_THEME = 'tabel_theme_v1';
 
 let orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
@@ -561,6 +603,7 @@ let editingOrderId = null;
 let editingTariffId = null;
 let currentDetailId = null;
 let currentItems = [];
+let searchQuery = '';
 
 if (tariffs.length === 0) {
   tariffs = [
@@ -589,11 +632,11 @@ function calcItemPrice(item) {
   if (!t) return 0;
   const qty = Number(item.quantity) || 1;
   if (t.type === 'sqm') {
-    const sqm = (Number(item.width) * Number(item.height)) / 10000;
+    const sqm = (Number(item.width) * Number(item.height)) / 1000000;
     return sqm * t.price * qty;
   }
   if (t.type === 'pm') {
-    const pm = Number(item.length) / 100;
+    const pm = Number(item.length) / 1000;
     return pm * t.price * qty;
   }
   if (t.type === 'hour') {
@@ -655,17 +698,37 @@ function renderHome() {
   document.getElementById('totalSum').textContent = fmtMoney(totalSum);
   document.getElementById('totalCount').textContent = orders.length;
 
-  const recent = [...orders].sort((a,b) => (b.createdAt||0) - (a.createdAt||0)).slice(0, 8);
+  let filtered = [...orders].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(o => 
+      (o.number || '').toLowerCase().includes(q) ||
+      (o.name || '').toLowerCase().includes(q)
+    );
+  } else {
+    filtered = filtered.slice(0, 8);
+  }
+  
   const box = document.getElementById('recentOrders');
-  if (recent.length === 0) {
+  if (orders.length === 0) {
     box.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Пока нет заказов.<br>Нажми + чтобы добавить первый</div></div>';
     return;
   }
-  box.innerHTML = recent.map(o => orderItemHtml(o)).join('');
+  if (filtered.length === 0) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Ничего не найдено</div></div>';
+    return;
+  }
+  box.innerHTML = filtered.map(o => orderItemHtml(o)).join('');
   box.querySelectorAll('[data-id]').forEach(el => {
     el.onclick = () => openDetail(el.dataset.id);
   });
 }
+
+document.getElementById('searchInput').oninput = (e) => {
+  searchQuery = e.target.value.trim();
+  renderHome();
+};
 
 function orderItemHtml(o) {
   const price = calcOrderPrice(o);
@@ -868,20 +931,20 @@ function renderItems() {
         fieldsHtml = `
           <div class="row-2">
             <div class="field" style="margin-bottom:8px">
-              <label class="field-label">Ширина, см</label>
-              <input type="number" class="input" data-idx="${idx}" data-field="width" value="${item.width || ''}" placeholder="0" min="0" step="0.1">
+              <label class="field-label">Ширина, мм</label>
+              <input type="number" class="input" data-idx="${idx}" data-field="width" value="${item.width || ''}" placeholder="2100" min="0" step="1">
             </div>
             <div class="field" style="margin-bottom:8px">
-              <label class="field-label">Высота, см</label>
-              <input type="number" class="input" data-idx="${idx}" data-field="height" value="${item.height || ''}" placeholder="0" min="0" step="0.1">
+              <label class="field-label">Высота, мм</label>
+              <input type="number" class="input" data-idx="${idx}" data-field="height" value="${item.height || ''}" placeholder="950" min="0" step="1">
             </div>
           </div>
         `;
       } else if (t.type === 'pm') {
         fieldsHtml = `
           <div class="field" style="margin-bottom:8px">
-            <label class="field-label">Длина, см</label>
-            <input type="number" class="input" data-idx="${idx}" data-field="length" value="${item.length || ''}" placeholder="0" min="0" step="0.1">
+            <label class="field-label">Длина, мм</label>
+            <input type="number" class="input" data-idx="${idx}" data-field="length" value="${item.length || ''}" placeholder="3000" min="0" step="1">
           </div>
         `;
       } else if (t.type === 'hour') {
@@ -996,8 +1059,8 @@ function openDetail(id) {
     const t = tariffs.find(x => x.id === item.tariffId);
     if (!t) return '';
     let sizeStr = '';
-    if (t.type === 'sqm') sizeStr = `${item.width}×${item.height} см`;
-    else if (t.type === 'pm') sizeStr = `${item.length} см`;
+    if (t.type === 'sqm') sizeStr = `${item.width}×${item.height} мм`;
+    else if (t.type === 'pm') sizeStr = `${item.length} мм`;
     else if (t.type === 'hour') sizeStr = `${item.hours} ч`;
     const itemPrice = calcItemPrice(item);
     return `
@@ -1037,6 +1100,12 @@ function openDetail(id) {
 }
 document.getElementById('closeDetail').onclick = () => detailModal.classList.remove('show');
 detailModal.onclick = e => { if (e.target === detailModal) detailModal.classList.remove('show'); };
+
+document.getElementById('editOrder').onclick = () => {
+  detailModal.classList.remove('show');
+  openOrderModal(currentDetailId);
+};
+
 document.getElementById('deleteOrder').onclick = () => {
   if (!confirm('Удалить заказ?')) return;
   orders = orders.filter(o => o.id !== currentDetailId);
