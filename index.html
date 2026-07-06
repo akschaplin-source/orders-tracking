@@ -41,6 +41,7 @@
     font-size: 15px;
     line-height: 1.4;
     overflow-x: hidden;
+    overflow-y: auto;
     padding-bottom: 90px;
     transition: background 0.3s, color 0.3s;
   }
@@ -403,6 +404,14 @@
     cursor: pointer; font-size: 14px; font-weight: 600;
     padding: 8px 0; margin-bottom: 12px; font-family: inherit;
   }
+  
+  /* Прокручиваемый список заказов в дне */
+  .day-orders-scroll {
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+    padding-right: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
 
   .toast {
     position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
@@ -478,6 +487,27 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-top: 12px;
+  }
+  
+  .detail-units {
+    padding: 12px 14px;
+    background: var(--card-2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .detail-units-label {
+    font-size: 11px;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .detail-units-value {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
   }
 
   ::-webkit-scrollbar { width: 6px; }
@@ -563,7 +593,9 @@
           </div>
         </div>
       </div>
-      <div id="dayOrders"></div>
+      <div class="day-orders-scroll">
+        <div id="dayOrders"></div>
+      </div>
     </div>
   </div>
 
@@ -833,7 +865,7 @@ function renderHome() {
       (o.name || '').toLowerCase().includes(q)
     );
   } else {
-    filtered = filtered.slice(0, 8);
+    filtered = filtered.slice(0, 5);
   }
   
   const box = document.getElementById('recentOrders');
@@ -1181,6 +1213,7 @@ function openDetail(id) {
   const o = orders.find(x => x.id === id);
   if (!o) return;
   const price = calcOrderPrice(o);
+  const units = calcOrdersUnits([o]);
   const d = new Date(o.date);
   const dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getFullYear();
   
@@ -1188,9 +1221,18 @@ function openDetail(id) {
     const t = tariffs.find(x => x.id === item.tariffId);
     if (!t) return '';
     let sizeStr = '';
-    if (t.type === 'sqm') sizeStr = `${item.width}×${item.height} мм`;
-    else if (t.type === 'pm') sizeStr = `${item.length} мм`;
-    else if (t.type === 'hour') sizeStr = `${item.hours} ч`;
+    let unitStr = '';
+    const u = getItemUnits(item);
+    if (t.type === 'sqm') {
+      sizeStr = `${item.width}×${item.height} мм`;
+      unitStr = `${fmtNum(u.sqm, 2)} м²`;
+    } else if (t.type === 'pm') {
+      sizeStr = `${item.length} мм`;
+      unitStr = `${fmtNum(u.pm, 2)} пм`;
+    } else if (t.type === 'hour') {
+      sizeStr = `${item.hours} ч`;
+      unitStr = `${fmtNum(u.hour, 1)} ч`;
+    }
     const itemPrice = calcItemPrice(item);
     return `
       <div style="padding:10px;background:var(--card-2);border-radius:10px;margin-bottom:6px">
@@ -1198,7 +1240,10 @@ function openDetail(id) {
           <div style="font-weight:600;font-size:14px">${escapeHtml(t.name)}</div>
           <div style="font-weight:700;color:var(--green)">${fmtMoney(itemPrice)}</div>
         </div>
-        <div style="font-size:12px;color:var(--text-2);margin-top:4px">${sizeStr} • ×${item.quantity}</div>
+        <div style="font-size:12px;color:var(--text-2);margin-top:4px;display:flex;justify-content:space-between;align-items:center">
+          <span>${sizeStr} • ×${item.quantity}</span>
+          <span style="color:var(--accent);font-weight:600">${unitStr}</span>
+        </div>
       </div>
     `;
   }).join('');
@@ -1214,6 +1259,10 @@ function openDetail(id) {
     <div class="price-preview" style="margin-bottom:12px">
       <span class="price-preview-label">Номер заказа</span>
       <span style="font-weight:700">${escapeHtml(o.number || '—')}</span>
+    </div>
+    <div class="detail-units">
+      <div class="detail-units-label">Объём работ</div>
+      <div class="detail-units-value">${formatUnits(units)}</div>
     </div>
     <div style="margin-bottom:12px">
       <div style="font-size:13px;color:var(--text-2);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Операции</div>
