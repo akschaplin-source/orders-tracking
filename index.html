@@ -47,10 +47,7 @@
   }
   .app { max-width: 520px; margin: 0 auto; padding: 16px 16px 0; }
   
-  .header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0 20px;
-  }
+  .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 20px; }
   .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
   .logo span { color: var(--accent); }
   .header-actions { display: flex; gap: 8px; }
@@ -94,16 +91,10 @@
     font-size: 38px; font-weight: 800; letter-spacing: -1px;
     position: relative; margin-bottom: 4px;
   }
-  .balance-sub {
-    font-size: 13px; color: var(--text-2);
-    position: relative;
-  }
+  .balance-sub { font-size: 13px; color: var(--text-2); position: relative; }
   [data-theme="light"] .balance-sub { color: rgba(13,13,18,0.6); }
   .balance-row { display: flex; gap: 12px; margin-top: 16px; position: relative; }
-  .balance-stat {
-    flex: 1; padding: 12px; border-radius: 14px;
-    background: rgba(255,255,255,0.05);
-  }
+  .balance-stat { flex: 1; padding: 12px; border-radius: 14px; background: rgba(255,255,255,0.05); }
   [data-theme="light"] .balance-stat { background: rgba(13,13,18,0.08); }
   .balance-stat-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; }
   [data-theme="light"] .balance-stat-label { color: rgba(13,13,18,0.6); }
@@ -114,28 +105,18 @@
     letter-spacing: 0.8px; margin: 20px 4px 10px; font-weight: 600;
   }
 
-  .search-box {
-    position: relative;
-    margin-bottom: 12px;
-  }
+  .search-box { position: relative; margin-bottom: 12px; }
   .search-input {
-    width: 100%;
-    padding: 14px 16px 14px 44px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    color: var(--text);
-    font-size: 15px;
-    font-family: inherit;
+    width: 100%; padding: 14px 16px 14px 44px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; color: var(--text);
+    font-size: 15px; font-family: inherit;
     transition: border-color 0.2s;
   }
   .search-input:focus { outline: none; border-color: var(--accent); }
   .search-icon {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-3);
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%); color: var(--text-3);
     pointer-events: none;
   }
   .search-icon svg { width: 20px; height: 20px; }
@@ -160,21 +141,13 @@
   .order-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
   .order-price { font-weight: 700; font-size: 16px; color: var(--green); flex-shrink: 0; }
 
-  .empty {
-    text-align: center; padding: 40px 20px; color: var(--text-2);
-  }
+  .empty { text-align: center; padding: 40px 20px; color: var(--text-2); }
   .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
   .empty-text { font-size: 14px; }
 
-  .cal-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 16px;
-  }
+  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .cal-title { font-size: 18px; font-weight: 700; text-transform: capitalize; }
-  .cal-nav { display: flex; gap: 6px; }
-  .cal-grid {
-    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
-  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .cal-weekday {
     text-align: center; font-size: 11px; color: var(--text-3);
     padding: 8px 0; font-weight: 600; text-transform: uppercase;
@@ -183,8 +156,7 @@
     aspect-ratio: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     border-radius: 12px; cursor: pointer; position: relative;
-    font-size: 14px; font-weight: 500;
-    transition: all 0.15s;
+    font-size: 14px; font-weight: 500; transition: all 0.15s;
   }
   .cal-day:hover { background: var(--card-2); }
   .cal-day.other { color: var(--text-3); opacity: 0.4; }
@@ -286,15 +258,9 @@
   }
   .btn:hover { background: var(--accent-2); }
   .btn:active { transform: scale(0.98); }
-  .btn-secondary {
-    background: var(--card); color: var(--text);
-    border: 1px solid var(--border);
-  }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
   .btn-danger { background: var(--red); color: white; }
-  .btn-small {
-    padding: 10px 16px; font-size: 14px;
-    margin-top: 0;
-  }
+  .btn-small { padding: 10px 16px; font-size: 14px; margin-top: 0; }
 
   .tariff-item {
     display: flex; align-items: center; gap: 12px;
@@ -323,81 +289,28 @@
   .mini-btn.danger:hover { color: var(--red); }
   .mini-btn svg { width: 16px; height: 16px; }
 
-  .day-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 12px;
-  }
-  .day-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  .day-stats-row {
-    display: flex;
-    gap: 8px;
-  }
+  .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .day-stats { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .day-stats-row { display: flex; gap: 8px; }
   .day-total {
-    flex: 1;
-    padding: 12px 14px;
-    background: var(--card-2);
-    border-radius: 12px;
+    flex: 1; padding: 12px 14px;
+    background: var(--card-2); border-radius: 12px;
     border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: flex; flex-direction: column; gap: 2px;
   }
-  .day-total-label {
-    font-size: 11px;
-    color: var(--text-2);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-  }
-  .day-total-value {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--green);
-  }
+  .day-total-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .day-total-value { font-size: 20px; font-weight: 800; color: var(--green); }
   .day-units {
-    flex: 2;
-    padding: 12px 14px;
-    background: var(--card-2);
-    border-radius: 12px;
+    flex: 2; padding: 12px 14px;
+    background: var(--card-2); border-radius: 12px;
     border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: flex; flex-direction: column; gap: 2px;
   }
-  .day-units-label {
-    font-size: 11px;
-    color: var(--text-2);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-  }
-  .day-units-value {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 12px;
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .unit-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--accent);
-  }
-  .unit-chip .unit-num {
-    font-size: 15px;
-    font-weight: 800;
-  }
-  .unit-chip .unit-label {
-    font-size: 12px;
-    color: var(--text-2);
-    font-weight: 500;
-  }
+  .day-units-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .day-units-value { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 13px; font-weight: 700; }
+  .unit-chip { display: inline-flex; align-items: center; gap: 4px; color: var(--accent); }
+  .unit-chip .unit-num { font-size: 15px; font-weight: 800; }
+  .unit-chip .unit-label { font-size: 12px; color: var(--text-2); font-weight: 500; }
   .back-btn {
     display: flex; align-items: center; gap: 6px;
     background: none; border: none; color: var(--accent);
@@ -442,10 +355,7 @@
     margin-bottom: 14px;
     border: 1px solid var(--border);
   }
-  .items-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 12px;
-  }
+  .items-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .items-title { font-size: 14px; font-weight: 700; }
   .item-card {
     background: var(--card-2);
@@ -455,38 +365,49 @@
     position: relative;
   }
   .item-remove {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: var(--red);
-    border: none;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
+    position: absolute; top: 8px; right: 8px;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--red); border: none; color: white;
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
   }
   .item-price {
-    margin-top: 8px;
-    padding: 8px 12px;
+    margin-top: 8px; padding: 8px 12px;
     background: rgba(46,213,115,0.1);
-    border-radius: 8px;
-    text-align: right;
-    font-weight: 700;
-    color: var(--green);
+    border-radius: 8px; text-align: right;
+    font-weight: 700; color: var(--green);
   }
 
-  .detail-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
+  /* Сегментный переключатель режимов */
+  .mode-switch {
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 10px;
+    gap: 3px;
   }
+  .mode-switch-btn {
+    flex: 1;
+    padding: 8px 10px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-2);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .mode-switch-btn.active {
+    background: var(--accent);
+    color: #0d0d12;
+  }
+
+  .detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
   
   .detail-units {
     padding: 12px 14px;
@@ -495,19 +416,8 @@
     border: 1px solid var(--border);
     margin-bottom: 12px;
   }
-  .detail-units-label {
-    font-size: 11px;
-    color: var(--text-2);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .detail-units-value {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-  }
+  .detail-units-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 6px; }
+  .detail-units-value { display: flex; flex-wrap: wrap; gap: 8px 14px; }
 
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -740,28 +650,45 @@ function currentMonthStr() {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
 }
 
+// Получение единиц измерения для позиции
 function getItemUnits(item) {
   const t = tariffs.find(x => x.id === item.tariffId);
   if (!t) return { sqm: 0, pm: 0, hour: 0 };
   const qty = Number(item.quantity) || 1;
   if (t.type === 'sqm') {
-    return { sqm: (Number(item.width) * Number(item.height)) / 1000000 * qty, pm: 0, hour: 0 };
+    let sqm = 0;
+    const mode = item.mode || 'size';
+    if (mode === 'manual') {
+      sqm = Number(item.manualSqm) || 0;
+    } else {
+      sqm = (Number(item.width) * Number(item.height)) / 1000000;
+    }
+    return { sqm: sqm * qty, pm: 0, hour: 0 };
   }
   if (t.type === 'pm') {
     return { sqm: 0, pm: Number(item.length) / 1000 * qty, hour: 0 };
   }
   if (t.type === 'hour') {
-    return { sqm: 0, pm: 0, hour: Number(item.hours) * qty };
+    const hours = Number(item.hours) || 0;
+    const minutes = Number(item.minutes) || 0;
+    return { sqm: 0, pm: 0, hour: (hours + minutes / 60) * qty };
   }
   return { sqm: 0, pm: 0, hour: 0 };
 }
 
+// Расчёт цены позиции
 function calcItemPrice(item) {
   const t = tariffs.find(x => x.id === item.tariffId);
   if (!t) return 0;
   const qty = Number(item.quantity) || 1;
   if (t.type === 'sqm') {
-    const sqm = (Number(item.width) * Number(item.height)) / 1000000;
+    let sqm = 0;
+    const mode = item.mode || 'size';
+    if (mode === 'manual') {
+      sqm = Number(item.manualSqm) || 0;
+    } else {
+      sqm = (Number(item.width) * Number(item.height)) / 1000000;
+    }
     return sqm * t.price * qty;
   }
   if (t.type === 'pm') {
@@ -769,7 +696,9 @@ function calcItemPrice(item) {
     return pm * t.price * qty;
   }
   if (t.type === 'hour') {
-    return Number(item.hours) * t.price * qty;
+    const hours = Number(item.hours) || 0;
+    const minutes = Number(item.minutes) || 0;
+    return (hours + minutes / 60) * t.price * qty;
   }
   return 0;
 }
@@ -1074,10 +1003,13 @@ document.getElementById('addItemBtn').onclick = () => {
   currentItems.push({
     id: uid(),
     tariffId: tariffs.length > 0 ? tariffs[0].id : '',
+    mode: 'size',
     width: '',
     height: '',
+    manualSqm: '',
     length: '',
     hours: '',
+    minutes: '',
     quantity: 1
   });
   renderItems();
@@ -1094,21 +1026,38 @@ function renderItems() {
   box.innerHTML = currentItems.map((item, idx) => {
     const t = tariffs.find(x => x.id === item.tariffId);
     let fieldsHtml = '';
+    const mode = item.mode || 'size';
     
     if (t) {
       if (t.type === 'sqm') {
-        fieldsHtml = `
-          <div class="row-2">
-            <div class="field" style="margin-bottom:8px">
-              <label class="field-label">Ширина, мм</label>
-              <input type="number" class="input" data-idx="${idx}" data-field="width" value="${item.width || ''}" placeholder="2100" min="0" step="1">
-            </div>
-            <div class="field" style="margin-bottom:8px">
-              <label class="field-label">Высота, мм</label>
-              <input type="number" class="input" data-idx="${idx}" data-field="height" value="${item.height || ''}" placeholder="950" min="0" step="1">
-            </div>
+        // Переключатель режимов для sqm
+        const switchHtml = `
+          <div class="mode-switch">
+            <button type="button" class="mode-switch-btn ${mode === 'size' ? 'active' : ''}" data-mode-switch="${idx}" data-mode="size">По размерам</button>
+            <button type="button" class="mode-switch-btn ${mode === 'manual' ? 'active' : ''}" data-mode-switch="${idx}" data-mode="manual">м² вручную</button>
           </div>
         `;
+        if (mode === 'manual') {
+          fieldsHtml = switchHtml + `
+            <div class="field" style="margin-bottom:8px">
+              <label class="field-label">Площадь, м²</label>
+              <input type="number" class="input" data-idx="${idx}" data-field="manualSqm" value="${item.manualSqm || ''}" placeholder="1.5" min="0" step="0.01">
+            </div>
+          `;
+        } else {
+          fieldsHtml = switchHtml + `
+            <div class="row-2">
+              <div class="field" style="margin-bottom:8px">
+                <label class="field-label">Ширина, мм</label>
+                <input type="number" class="input" data-idx="${idx}" data-field="width" value="${item.width || ''}" placeholder="2100" min="0" step="1">
+              </div>
+              <div class="field" style="margin-bottom:8px">
+                <label class="field-label">Высота, мм</label>
+                <input type="number" class="input" data-idx="${idx}" data-field="height" value="${item.height || ''}" placeholder="950" min="0" step="1">
+              </div>
+            </div>
+          `;
+        }
       } else if (t.type === 'pm') {
         fieldsHtml = `
           <div class="field" style="margin-bottom:8px">
@@ -1118,9 +1067,15 @@ function renderItems() {
         `;
       } else if (t.type === 'hour') {
         fieldsHtml = `
-          <div class="field" style="margin-bottom:8px">
-            <label class="field-label">Часы</label>
-            <input type="number" class="input" data-idx="${idx}" data-field="hours" value="${item.hours || ''}" placeholder="0" min="0" step="0.1">
+          <div class="row-2">
+            <div class="field" style="margin-bottom:8px">
+              <label class="field-label">Часы</label>
+              <input type="number" class="input" data-idx="${idx}" data-field="hours" value="${item.hours || ''}" placeholder="0" min="0" step="1">
+            </div>
+            <div class="field" style="margin-bottom:8px">
+              <label class="field-label">Минуты</label>
+              <input type="number" class="input" data-idx="${idx}" data-field="minutes" value="${item.minutes || ''}" placeholder="0" min="0" max="59" step="1">
+            </div>
           </div>
         `;
       }
@@ -1155,6 +1110,16 @@ function renderItems() {
     };
   });
   
+  // Переключатель режимов sqm
+  box.querySelectorAll('[data-mode-switch]').forEach(btn => {
+    btn.onclick = () => {
+      const idx = parseInt(btn.dataset.modeSwitch);
+      currentItems[idx].mode = btn.dataset.mode;
+      renderItems();
+      updatePricePreview();
+    };
+  });
+  
   box.querySelectorAll('input, select').forEach(input => {
     input.oninput = () => {
       const idx = parseInt(input.dataset.idx);
@@ -1183,9 +1148,16 @@ document.getElementById('saveOrder').onclick = () => {
   const validItems = currentItems.filter(item => {
     const t = tariffs.find(x => x.id === item.tariffId);
     if (!t) return false;
-    if (t.type === 'sqm' && (!item.width || !item.height)) return false;
-    if (t.type === 'pm' && !item.length) return false;
-    if (t.type === 'hour' && !item.hours) return false;
+    const mode = item.mode || 'size';
+    if (t.type === 'sqm') {
+      if (mode === 'manual') {
+        return Number(item.manualSqm) > 0;
+      } else {
+        return Number(item.width) > 0 && Number(item.height) > 0;
+      }
+    }
+    if (t.type === 'pm') return Number(item.length) > 0;
+    if (t.type === 'hour') return Number(item.hours) > 0 || Number(item.minutes) > 0;
     return true;
   });
   
@@ -1231,15 +1203,29 @@ function openDetail(id) {
     let sizeStr = '';
     let unitStr = '';
     const u = getItemUnits(item);
+    const mode = item.mode || 'size';
+    
     if (t.type === 'sqm') {
-      sizeStr = `${item.width}×${item.height} мм`;
+      if (mode === 'manual') {
+        sizeStr = `${fmtNum(Number(item.manualSqm) || 0, 2)} м² (вручную)`;
+      } else {
+        sizeStr = `${item.width}×${item.height} мм`;
+      }
       unitStr = `${fmtNum(u.sqm, 2)} м²`;
     } else if (t.type === 'pm') {
       sizeStr = `${item.length} мм`;
       unitStr = `${fmtNum(u.pm, 2)} пм`;
     } else if (t.type === 'hour') {
-      sizeStr = `${item.hours} ч`;
-      unitStr = `${fmtNum(u.hour, 1)} ч`;
+      const h = Number(item.hours) || 0;
+      const m = Number(item.minutes) || 0;
+      if (h > 0 && m > 0) {
+        sizeStr = `${h} ч ${m} мин`;
+      } else if (h > 0) {
+        sizeStr = `${h} ч`;
+      } else {
+        sizeStr = `${m} мин`;
+      }
+      unitStr = `${fmtNum(u.hour, 2)} ч`;
     }
     const itemPrice = calcItemPrice(item);
     return `
