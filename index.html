@@ -405,7 +405,6 @@
     padding: 8px 0; margin-bottom: 12px; font-family: inherit;
   }
   
-  /* Прокручиваемый список заказов в дне */
   .day-orders-scroll {
     max-height: calc(100vh - 280px);
     overflow-y: auto;
@@ -542,7 +541,7 @@
       <div class="balance-sub" id="todayCount">0 заказов</div>
       <div class="balance-row">
         <div class="balance-stat">
-          <div class="balance-stat-label">Всего</div>
+          <div class="balance-stat-label">За месяц</div>
           <div class="balance-stat-value" id="totalSum">0 ₽</div>
         </div>
         <div class="balance-stat">
@@ -736,6 +735,10 @@ function todayStr() {
   const d = new Date();
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
+function currentMonthStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
 
 function getItemUnits(item) {
   const t = tariffs.find(x => x.id === item.tariffId);
@@ -847,14 +850,19 @@ function switchView(v) {
 
 function renderHome() {
   const today = todayStr();
+  const currentMonth = currentMonthStr();
+  
   const todayOrders = orders.filter(o => o.date === today);
   const todaySum = todayOrders.reduce((s, o) => s + calcOrderPrice(o), 0);
-  const totalSum = orders.reduce((s, o) => s + calcOrderPrice(o), 0);
+  
+  const monthOrders = orders.filter(o => o.date.substring(0, 7) === currentMonth);
+  const totalSum = monthOrders.reduce((s, o) => s + calcOrderPrice(o), 0);
+  const totalCount = monthOrders.length;
   
   document.getElementById('todaySum').textContent = fmtMoney(todaySum);
   document.getElementById('todayCount').textContent = plural(todayOrders.length, 'заказ', 'заказа', 'заказов');
   document.getElementById('totalSum').textContent = fmtMoney(totalSum);
-  document.getElementById('totalCount').textContent = orders.length;
+  document.getElementById('totalCount').textContent = totalCount;
 
   let filtered = [...orders].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
   
