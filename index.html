@@ -334,6 +334,7 @@
     z-index: 300; opacity: 0; pointer-events: none;
     transition: opacity 0.3s, transform 0.3s;
     font-weight: 600; font-size: 14px;
+    max-width: 90%;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -379,7 +380,6 @@
     font-weight: 700; color: var(--green);
   }
 
-  /* Сегментный переключатель режимов */
   .mode-switch {
     display: flex;
     background: var(--card);
@@ -419,6 +419,43 @@
   .detail-units-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 6px; }
   .detail-units-value { display: flex; flex-wrap: wrap; gap: 8px 14px; }
 
+  /* Меню экспорта */
+  .export-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    z-index: 50;
+    display: none;
+    min-width: 200px;
+  }
+  .export-menu.show { display: block; animation: fadeIn 0.15s; }
+  .export-menu-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s;
+    border: none;
+    background: none;
+    color: var(--text);
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .export-menu-item:hover { background: var(--card-2); }
+  .export-menu-item + .export-menu-item { border-top: 1px solid var(--border); }
+  .export-menu-item svg { width: 18px; height: 18px; color: var(--accent); }
+  .export-menu-meta { font-size: 11px; color: var(--text-3); font-weight: 400; margin-top: 2px; }
+  .header-actions { position: relative; }
+
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -435,6 +472,29 @@
       <button class="icon-btn" id="exportBtn" title="Экспорт">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
+      <div class="export-menu" id="exportMenu">
+        <button class="export-menu-item" id="exportCsvOrders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+          <div>
+            <div>📊 Заказы (CSV)</div>
+            <div class="export-menu-meta">Сводная таблица</div>
+          </div>
+        </button>
+        <button class="export-menu-item" id="exportCsvOperations">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <div>
+            <div>📋 Операции (CSV)</div>
+            <div class="export-menu-meta">Детализация работ</div>
+          </div>
+        </button>
+        <button class="export-menu-item" id="exportJson">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <div>
+            <div>💾 Резервная копия (JSON)</div>
+            <div class="export-menu-meta">Для восстановления</div>
+          </div>
+        </button>
+      </div>
       <button class="icon-btn" id="importBtn" title="Импорт">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </button>
@@ -650,7 +710,6 @@ function currentMonthStr() {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
 }
 
-// Получение единиц измерения для позиции
 function getItemUnits(item) {
   const t = tariffs.find(x => x.id === item.tariffId);
   if (!t) return { sqm: 0, pm: 0, hour: 0 };
@@ -676,7 +735,6 @@ function getItemUnits(item) {
   return { sqm: 0, pm: 0, hour: 0 };
 }
 
-// Расчёт цены позиции
 function calcItemPrice(item) {
   const t = tariffs.find(x => x.id === item.tariffId);
   if (!t) return 0;
@@ -1030,7 +1088,6 @@ function renderItems() {
     
     if (t) {
       if (t.type === 'sqm') {
-        // Переключатель режимов для sqm
         const switchHtml = `
           <div class="mode-switch">
             <button type="button" class="mode-switch-btn ${mode === 'size' ? 'active' : ''}" data-mode-switch="${idx}" data-mode="size">По размерам</button>
@@ -1110,7 +1167,6 @@ function renderItems() {
     };
   });
   
-  // Переключатель режимов sqm
   box.querySelectorAll('[data-mode-switch]').forEach(btn => {
     btn.onclick = () => {
       const idx = parseInt(btn.dataset.modeSwitch);
@@ -1327,7 +1383,171 @@ document.getElementById('saveTariff').onclick = () => {
   renderTariffs();
 };
 
-document.getElementById('exportBtn').onclick = () => {
+// ===== ЭКСПОРТ =====
+function escCsv(s) {
+  if (s === null || s === undefined) return '';
+  s = String(s);
+  if (s.includes(';') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
+function downloadFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
+function formatDateRu(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
+}
+
+function getItemSizeStr(item) {
+  const t = tariffs.find(x => x.id === item.tariffId);
+  if (!t) return '';
+  const mode = item.mode || 'size';
+  if (t.type === 'sqm') {
+    if (mode === 'manual') return `${Number(item.manualSqm) || 0} м²`;
+    return `${item.width || 0}×${item.height || 0} мм`;
+  }
+  if (t.type === 'pm') return `${item.length || 0} мм`;
+  if (t.type === 'hour') {
+    const h = Number(item.hours) || 0;
+    const m = Number(item.minutes) || 0;
+    if (h > 0 && m > 0) return `${h}ч ${m}мин`;
+    if (h > 0) return `${h}ч`;
+    return `${m}мин`;
+  }
+  return '';
+}
+
+function getItemVolumeStr(item) {
+  const u = getItemUnits(item);
+  const t = tariffs.find(x => x.id === item.tariffId);
+  if (!t) return '';
+  if (t.type === 'sqm') return `${u.sqm.toFixed(2)} м²`;
+  if (t.type === 'pm') return `${u.pm.toFixed(2)} пм`;
+  if (t.type === 'hour') return `${u.hour.toFixed(2)} ч`;
+  return '';
+}
+
+function exportCsvOrders() {
+  if (orders.length === 0) {
+    toast('Нет данных для экспорта');
+    return;
+  }
+  
+  const BOM = '\uFEFF';
+  const headers = ['Дата', 'Номер заказа', 'Название изделия', 'Сумма (₽)', 'Площадь (м²)', 'Пм', 'Часы', 'Количество операций'];
+  let rows = [headers.map(escCsv).join(';')];
+  
+  const sorted = [...orders].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  
+  sorted.forEach(o => {
+    const price = calcOrderPrice(o);
+    const units = calcOrdersUnits([o]);
+    const row = [
+      formatDateRu(o.date),
+      o.number || '',
+      o.name || '',
+      Math.round(price),
+      units.sqm.toFixed(2).replace('.', ','),
+      units.pm.toFixed(2).replace('.', ','),
+      units.hour.toFixed(2).replace('.', ','),
+      (o.items || []).length
+    ].map(escCsv).join(';');
+    rows.push(row);
+  });
+  
+  // Итоговая строка
+  const totalSum = orders.reduce((s, o) => s + calcOrderPrice(o), 0);
+  const totalUnits = calcOrdersUnits(orders);
+  rows.push('');
+  rows.push([
+    'ИТОГО',
+    orders.length + ' ' + plural(orders.length, 'заказ', 'заказа', 'заказов'),
+    '',
+    Math.round(totalSum),
+    totalUnits.sqm.toFixed(2).replace('.', ','),
+    totalUnits.pm.toFixed(2).replace('.', ','),
+    totalUnits.hour.toFixed(2).replace('.', ','),
+    ''
+  ].map(escCsv).join(';'));
+  
+  const content = BOM + rows.join('\r\n');
+  downloadFile('tabel_orders_' + todayStr() + '.csv', content, 'text/csv');
+  toast('✓ Заказы экспортированы');
+}
+
+function exportCsvOperations() {
+  if (orders.length === 0) {
+    toast('Нет данных для экспорта');
+    return;
+  }
+  
+  const BOM = '\uFEFF';
+  const headers = ['Дата', 'Номер заказа', 'Изделие', 'Операция', 'Тип расчёта', 'Размеры', 'Кол-во', 'Объём', 'Цена (₽)', 'Итого по заказу (₽)'];
+  let rows = [headers.map(escCsv).join(';')];
+  
+  const sorted = [...orders].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  
+  sorted.forEach(o => {
+    const orderTotal = calcOrderPrice(o);
+    (o.items || []).forEach((item, idx) => {
+      const t = tariffs.find(x => x.id === item.tariffId);
+      if (!t) return;
+      const price = calcItemPrice(item);
+      const typeStr = t.type === 'sqm' ? 'Площадь' : t.type === 'pm' ? 'Погонный метр' : 'Часы';
+      
+      const row = [
+        formatDateRu(o.date),
+        o.number || '',
+        o.name || '',
+        t.name,
+        typeStr,
+        getItemSizeStr(item),
+        Number(item.quantity) || 1,
+        getItemVolumeStr(item).replace('.', ','),
+        Math.round(price),
+        idx === 0 ? Math.round(orderTotal) : ''
+      ].map(escCsv).join(';');
+      rows.push(row);
+    });
+  });
+  
+  // Итоговая строка
+  const totalSum = orders.reduce((s, o) => s + calcOrderPrice(o), 0);
+  const totalUnits = calcOrdersUnits(orders);
+  rows.push('');
+  rows.push([
+    'ИТОГО',
+    orders.length + ' ' + plural(orders.length, 'заказ', 'заказа', 'заказов'),
+    '',
+    '',
+    '',
+    '',
+    '',
+    `${totalUnits.sqm.toFixed(2).replace('.', ',')} м² / ${totalUnits.pm.toFixed(2).replace('.', ',')} пм / ${totalUnits.hour.toFixed(2).replace('.', ',')} ч`,
+    '',
+    Math.round(totalSum)
+  ].map(escCsv).join(';'));
+  
+  const content = BOM + rows.join('\r\n');
+  downloadFile('tabel_operations_' + todayStr() + '.csv', content, 'text/csv');
+  toast('✓ Операции экспортированы');
+}
+
+function exportJson() {
   const data = { orders, tariffs, exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1336,7 +1556,37 @@ document.getElementById('exportBtn').onclick = () => {
   a.download = 'tabel-backup-' + todayStr() + '.json';
   a.click();
   URL.revokeObjectURL(url);
-  toast('Бэкап сохранён');
+  toast('✓ Бэкап сохранён');
+}
+
+// Меню экспорта
+const exportBtn = document.getElementById('exportBtn');
+const exportMenu = document.getElementById('exportMenu');
+
+exportBtn.onclick = (e) => {
+  e.stopPropagation();
+  exportMenu.classList.toggle('show');
+};
+
+document.addEventListener('click', (e) => {
+  if (!exportMenu.contains(e.target) && e.target !== exportBtn) {
+    exportMenu.classList.remove('show');
+  }
+});
+
+document.getElementById('exportCsvOrders').onclick = () => {
+  exportMenu.classList.remove('show');
+  exportCsvOrders();
+};
+
+document.getElementById('exportCsvOperations').onclick = () => {
+  exportMenu.classList.remove('show');
+  exportCsvOperations();
+};
+
+document.getElementById('exportJson').onclick = () => {
+  exportMenu.classList.remove('show');
+  exportJson();
 };
 
 document.getElementById('importBtn').onclick = () => document.getElementById('importFile').click();
@@ -1352,7 +1602,7 @@ document.getElementById('importFile').onchange = e => {
       orders = data.orders;
       tariffs = data.tariffs;
       saveOrders(); saveTariffs();
-      toast('Данные импортированы');
+      toast('✓ Данные импортированы');
       refreshCurrentView();
       if (currentView === 'tariffs') renderTariffs();
     } catch (err) {
