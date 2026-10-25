@@ -1,1630 +1,529 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0d0d12">
-<title>Табель</title>
-<style>
-  :root {
-    --bg: #0d0d12;
-    --bg-2: #15151d;
-    --card: #1a1a24;
-    --card-2: #22222e;
-    --text: #ffffff;
-    --text-2: #9a9aa8;
-    --text-3: #5c5c6a;
-    --accent: #FFD60A;
-    --accent-2: #FFC400;
-    --green: #2ED573;
-    --red: #FF4757;
-    --border: rgba(255,255,255,0.06);
-    --shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-  [data-theme="light"] {
-    --bg: #f5f5f7;
-    --bg-2: #ffffff;
-    --card: #ffffff;
-    --card-2: #f0f0f3;
-    --text: #0d0d12;
-    --text-2: #6b6b78;
-    --text-3: #9a9aa8;
-    --border: rgba(0,0,0,0.08);
-    --shadow: 0 8px 32px rgba(0,0,0,0.08);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.4;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-bottom: 90px;
-    transition: background 0.3s, color 0.3s;
-  }
-  .app { max-width: 520px; margin: 0 auto; padding: 16px 16px 0; }
-  
-  .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 20px; }
-  .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-  .logo span { color: var(--accent); }
-  .header-actions { display: flex; gap: 8px; }
-  .icon-btn {
-    width: 40px; height: 40px; border-radius: 12px;
-    background: var(--card); border: 1px solid var(--border);
-    color: var(--text); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-  .icon-btn:hover { background: var(--card-2); }
-  .icon-btn svg { width: 20px; height: 20px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор заказов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  .card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-  }
-  .balance-card {
-    background: linear-gradient(135deg, #1f1f2e 0%, #15151d 100%);
-    position: relative; overflow: hidden;
-  }
-  [data-theme="light"] .balance-card {
-    background: linear-gradient(135deg, #FFD60A 0%, #FFC400 100%);
-    color: #0d0d12;
-  }
-  .balance-card::before {
-    content: ''; position: absolute; top: -50%; right: -20%;
-    width: 300px; height: 300px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,214,10,0.15) 0%, transparent 70%);
-  }
-  .balance-label {
-    font-size: 13px; color: var(--text-2);
-    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
-    position: relative;
-  }
-  [data-theme="light"] .balance-label { color: rgba(13,13,18,0.6); }
-  .balance-value {
-    font-size: 38px; font-weight: 800; letter-spacing: -1px;
-    position: relative; margin-bottom: 4px;
-  }
-  .balance-sub { font-size: 13px; color: var(--text-2); position: relative; }
-  [data-theme="light"] .balance-sub { color: rgba(13,13,18,0.6); }
-  .balance-row { display: flex; gap: 12px; margin-top: 16px; position: relative; }
-  .balance-stat { flex: 1; padding: 12px; border-radius: 14px; background: rgba(255,255,255,0.05); }
-  [data-theme="light"] .balance-stat { background: rgba(13,13,18,0.08); }
-  .balance-stat-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; }
-  [data-theme="light"] .balance-stat-label { color: rgba(13,13,18,0.6); }
-  .balance-stat-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
 
-  .section-title {
-    font-size: 13px; color: var(--text-2); text-transform: uppercase;
-    letter-spacing: 0.8px; margin: 20px 4px 10px; font-weight: 600;
-  }
+        .calculator {
+            background: #000;
+            border-radius: 24px;
+            padding: 20px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(255, 165, 0, 0.3);
+            border: 2px solid #ff8c00;
+        }
 
-  .search-box { position: relative; margin-bottom: 12px; }
-  .search-input {
-    width: 100%; padding: 14px 16px 14px 44px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; color: var(--text);
-    font-size: 15px; font-family: inherit;
-    transition: border-color 0.2s;
-  }
-  .search-input:focus { outline: none; border-color: var(--accent); }
-  .search-icon {
-    position: absolute; left: 14px; top: 50%;
-    transform: translateY(-50%); color: var(--text-3);
-    pointer-events: none;
-  }
-  .search-icon svg { width: 20px; height: 20px; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-  .order-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px; background: var(--card);
-    border-radius: 16px; margin-bottom: 8px;
-    border: 1px solid var(--border);
-    cursor: pointer; transition: all 0.2s;
-  }
-  .order-item:hover { background: var(--card-2); transform: translateY(-1px); }
-  .order-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: flex; align-items: center; justify-content: center;
-    color: #0d0d12; font-weight: 800; font-size: 16px;
-    flex-shrink: 0;
-  }
-  .order-info { flex: 1; min-width: 0; }
-  .order-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .order-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-  .order-price { font-weight: 700; font-size: 16px; color: var(--green); flex-shrink: 0; }
+        .header h1 {
+            font-size: 20px;
+            color: #ffa500;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
 
-  .empty { text-align: center; padding: 40px 20px; color: var(--text-2); }
-  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-  .empty-text { font-size: 14px; }
+        .mode-switch {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
 
-  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .cal-title { font-size: 18px; font-weight: 700; text-transform: capitalize; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .cal-weekday {
-    text-align: center; font-size: 11px; color: var(--text-3);
-    padding: 8px 0; font-weight: 600; text-transform: uppercase;
-  }
-  .cal-day {
-    aspect-ratio: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    border-radius: 12px; cursor: pointer; position: relative;
-    font-size: 14px; font-weight: 500; transition: all 0.15s;
-  }
-  .cal-day:hover { background: var(--card-2); }
-  .cal-day.other { color: var(--text-3); opacity: 0.4; }
-  .cal-day.today { background: var(--card-2); color: var(--accent); font-weight: 700; }
-  .cal-day.selected { background: var(--accent); color: #0d0d12; font-weight: 700; }
-  .cal-day.has-orders::after {
-    content: ''; position: absolute; bottom: 6px;
-    width: 4px; height: 4px; border-radius: 50%;
-    background: var(--accent);
-  }
-  .cal-day.selected.has-orders::after { background: #0d0d12; }
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ff8c00;
+            background: transparent;
+            color: #ff8c00;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
 
-  .tabs {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--bg-2);
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: space-around;
-    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    z-index: 100;
-  }
-  [data-theme="light"] .tabs { background: rgba(255,255,255,0.85); }
-  .tab {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    gap: 4px; padding: 8px 4px; cursor: pointer;
-    color: var(--text-3); transition: color 0.2s;
-    background: none; border: none; font-family: inherit;
-  }
-  .tab svg { width: 24px; height: 24px; }
-  .tab-label { font-size: 10px; font-weight: 600; }
-  .tab.active { color: var(--accent); }
+        .mode-btn.active {
+            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+            color: #000;
+            border-color: #ffa500;
+        }
 
-  .fab {
-    position: fixed; bottom: 90px; right: 20px;
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--accent); color: #0d0d12;
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 24px rgba(255,214,10,0.4);
-    z-index: 99; transition: all 0.2s;
-  }
-  .fab:hover { transform: scale(1.05); }
-  .fab:active { transform: scale(0.95); }
-  .fab svg { width: 28px; height: 28px; }
+        .display {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            min-height: 100px;
+            border: 1px solid #333;
+        }
 
-  .modal-bg {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    z-index: 200; display: none;
-    align-items: flex-end; justify-content: center;
-    animation: fadeIn 0.2s;
-  }
-  .modal-bg.show { display: flex; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .modal {
-    background: var(--bg-2);
-    width: 100%; max-width: 520px;
-    border-radius: 24px 24px 0 0;
-    padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
-    max-height: 90vh; overflow-y: auto;
-    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .modal-handle {
-    width: 40px; height: 4px; border-radius: 2px;
-    background: var(--text-3); margin: 0 auto 16px; opacity: 0.5;
-  }
-  .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; }
-  
-  .field { margin-bottom: 14px; }
-  .field-label {
-    display: block; font-size: 12px; color: var(--text-2);
-    margin-bottom: 6px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .input, .select {
-    width: 100%; padding: 14px 16px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; color: var(--text);
-    font-size: 15px; font-family: inherit;
-    transition: border-color 0.2s;
-  }
-  .input:focus, .select:focus { outline: none; border-color: var(--accent); }
-  .select { appearance: none; cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9aa8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 16px center;
-    padding-right: 40px;
-  }
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  
-  .btn {
-    width: 100%; padding: 16px;
-    background: var(--accent); color: #0d0d12;
-    border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 700; cursor: pointer;
-    font-family: inherit; transition: all 0.2s;
-    margin-top: 8px;
-  }
-  .btn:hover { background: var(--accent-2); }
-  .btn:active { transform: scale(0.98); }
-  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
-  .btn-danger { background: var(--red); color: white; }
-  .btn-small { padding: 10px 16px; font-size: 14px; margin-top: 0; }
+        .measurements {
+            max-height: 120px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+        }
 
-  .tariff-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px; background: var(--card);
-    border-radius: 16px; margin-bottom: 8px;
-    border: 1px solid var(--border);
-  }
-  .tariff-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: var(--card-2);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--accent); flex-shrink: 0;
-  }
-  .tariff-info { flex: 1; min-width: 0; }
-  .tariff-name { font-weight: 600; font-size: 15px; }
-  .tariff-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-  .tariff-price { font-weight: 700; color: var(--accent); }
-  .tariff-actions { display: flex; gap: 4px; }
-  .mini-btn {
-    width: 32px; height: 32px; border-radius: 10px;
-    background: var(--card-2); border: none; cursor: pointer;
-    color: var(--text-2); display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-  .mini-btn:hover { color: var(--text); }
-  .mini-btn.danger:hover { color: var(--red); }
-  .mini-btn svg { width: 16px; height: 16px; }
+        .measurement-item {
+            background: #2d2d2d;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #ff8c00;
+        }
 
-  .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .day-stats { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-  .day-stats-row { display: flex; gap: 8px; }
-  .day-total {
-    flex: 1; padding: 12px 14px;
-    background: var(--card-2); border-radius: 12px;
-    border: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 2px;
-  }
-  .day-total-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-  .day-total-value { font-size: 20px; font-weight: 800; color: var(--green); }
-  .day-units {
-    flex: 2; padding: 12px 14px;
-    background: var(--card-2); border-radius: 12px;
-    border: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 2px;
-  }
-  .day-units-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-  .day-units-value { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 13px; font-weight: 700; }
-  .unit-chip { display: inline-flex; align-items: center; gap: 4px; color: var(--accent); }
-  .unit-chip .unit-num { font-size: 15px; font-weight: 800; }
-  .unit-chip .unit-label { font-size: 12px; color: var(--text-2); font-weight: 500; }
-  .back-btn {
-    display: flex; align-items: center; gap: 6px;
-    background: none; border: none; color: var(--accent);
-    cursor: pointer; font-size: 14px; font-weight: 600;
-    padding: 8px 0; margin-bottom: 12px; font-family: inherit;
-  }
-  
-  .day-orders-scroll {
-    max-height: calc(100vh - 280px);
-    overflow-y: auto;
-    padding-right: 4px;
-    -webkit-overflow-scrolling: touch;
-  }
+        .measurement-item .value {
+            color: #ffa500;
+            font-weight: 600;
+        }
 
-  .toast {
-    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-    background: var(--card); color: var(--text);
-    padding: 12px 20px; border-radius: 12px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    z-index: 300; opacity: 0; pointer-events: none;
-    transition: opacity 0.3s, transform 0.3s;
-    font-weight: 600; font-size: 14px;
-    max-width: 90%;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .total {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffa500;
+            text-align: right;
+            padding: 8px 0;
+            border-top: 2px solid #333;
+        }
 
-  .view { display: none; animation: fadeIn 0.25s; }
-  .view.active { display: block; }
+        .total-label {
+            font-size: 12px;
+            color: #888;
+            text-align: right;
+            margin-bottom: 4px;
+        }
 
-  .price-preview {
-    padding: 14px; background: var(--card-2);
-    border-radius: 14px; margin-top: 4px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .price-preview-label { color: var(--text-2); font-size: 13px; }
-  .price-preview-value { font-size: 20px; font-weight: 800; color: var(--accent); }
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
 
-  .items-section {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 14px;
-    border: 1px solid var(--border);
-  }
-  .items-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .items-title { font-size: 14px; font-weight: 700; }
-  .item-card {
-    background: var(--card-2);
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 10px;
-    position: relative;
-  }
-  .item-remove {
-    position: absolute; top: 8px; right: 8px;
-    width: 28px; height: 28px; border-radius: 8px;
-    background: var(--red); border: none; color: white;
-    cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 700;
-  }
-  .item-price {
-    margin-top: 8px; padding: 8px 12px;
-    background: rgba(46,213,115,0.1);
-    border-radius: 8px; text-align: right;
-    font-weight: 700; color: var(--green);
-  }
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
 
-  .mode-switch {
-    display: flex;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 3px;
-    margin-bottom: 10px;
-    gap: 3px;
-  }
-  .mode-switch-btn {
-    flex: 1;
-    padding: 8px 10px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: var(--text-2);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-  }
-  .mode-switch-btn.active {
-    background: var(--accent);
-    color: #0d0d12;
-  }
+        .input-group label {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-  .detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-  
-  .detail-units {
-    padding: 12px 14px;
-    background: var(--card-2);
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    margin-bottom: 12px;
-  }
-  .detail-units-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 6px; }
-  .detail-units-value { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+        .input-group input {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s;
+        }
 
-  /* Меню экспорта */
-  .export-menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    z-index: 50;
-    display: none;
-    min-width: 200px;
-  }
-  .export-menu.show { display: block; animation: fadeIn 0.15s; }
-  .export-menu-item {
-    padding: 12px 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background 0.15s;
-    border: none;
-    background: none;
-    color: var(--text);
-    width: 100%;
-    text-align: left;
-    font-family: inherit;
-  }
-  .export-menu-item:hover { background: var(--card-2); }
-  .export-menu-item + .export-menu-item { border-top: 1px solid var(--border); }
-  .export-menu-item svg { width: 18px; height: 18px; color: var(--accent); }
-  .export-menu-meta { font-size: 11px; color: var(--text-3); font-weight: 400; margin-top: 2px; }
-  .header-actions { position: relative; }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff8c00;
+            background: #2d2d2d;
+        }
 
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-</style>
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+            color: #000;
+        }
+
+        .btn-clear {
+            background: #2d2d2d;
+            color: #ff8c00;
+            border: 2px solid #ff8c00;
+        }
+
+        .btn-equals {
+            background: linear-gradient(135deg, #ffa500 0%, #ffcc00 100%);
+            color: #000;
+            grid-column: span 3;
+        }
+
+        .save-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: none;
+            border: 1px solid #333;
+        }
+
+        .save-section.active {
+            display: block;
+        }
+
+        .save-section input,
+        .save-section textarea {
+            width: 100%;
+            background: #2d2d2d;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-family: inherit;
+        }
+
+        .save-section textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .save-section input:focus,
+        .save-section textarea:focus {
+            outline: none;
+            border-color: #ff8c00;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .orders-feed {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .order-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ff8c00;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .order-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffa500;
+        }
+
+        .order-date {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .order-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffcc00;
+            margin-bottom: 6px;
+        }
+
+        .order-comment {
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff8c00;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 400px) {
+            .calculator {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .total {
+                font-size: 24px;
+            }
+
+            .btn {
+                padding: 14px;
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <div class="logo">Табель<span>.</span></div>
-    <div class="header-actions">
-      <button class="icon-btn" id="themeBtn" title="Тема">
-        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <button class="icon-btn" id="exportBtn" title="Экспорт">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-      <div class="export-menu" id="exportMenu">
-        <button class="export-menu-item" id="exportCsvOrders">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-          <div>
-            <div>📊 Заказы (CSV)</div>
-            <div class="export-menu-meta">Сводная таблица</div>
-          </div>
-        </button>
-        <button class="export-menu-item" id="exportCsvOperations">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          <div>
-            <div>📋 Операции (CSV)</div>
-            <div class="export-menu-meta">Детализация работ</div>
-          </div>
-        </button>
-        <button class="export-menu-item" id="exportJson">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <div>
-            <div>💾 Резервная копия (JSON)</div>
-            <div class="export-menu-meta">Для восстановления</div>
-          </div>
-        </button>
-      </div>
-      <button class="icon-btn" id="importBtn" title="Импорт">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="view active" id="view-home">
-    <div class="card balance-card">
-      <div class="balance-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Сегодня
-      </div>
-      <div class="balance-value" id="todaySum">0 ₽</div>
-      <div class="balance-sub" id="todayCount">0 заказов</div>
-      <div class="balance-row">
-        <div class="balance-stat">
-          <div class="balance-stat-label">За месяц</div>
-          <div class="balance-stat-value" id="totalSum">0 ₽</div>
+    <div class="calculator">
+        <div class="header">
+            <h1>⚡ КАЛЬКУЛЯТОР</h1>
         </div>
-        <div class="balance-stat">
-          <div class="balance-stat-label">Заказов</div>
-          <div class="balance-stat-value" id="totalCount">0</div>
+
+        <div class="mode-switch">
+            <button class="mode-btn active" data-mode="square">м²</button>
+            <button class="mode-btn" data-mode="linear">п.м.</button>
         </div>
-      </div>
-    </div>
 
-    <div class="section-title">Заказы</div>
-    <div class="search-box">
-      <div class="search-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </div>
-      <input type="text" class="search-input" id="searchInput" placeholder="Поиск по номеру или названию">
-    </div>
-    <div id="recentOrders"></div>
-  </div>
-
-  <div class="view" id="view-calendar">
-    <div id="calendarView">
-      <div class="card">
-        <div class="cal-header">
-          <button class="icon-btn" id="prevMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <div class="cal-title" id="calTitle"></div>
-          <button class="icon-btn" id="nextMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <div class="display">
+            <div class="measurements" id="measurements"></div>
+            <div class="total-label">ИТОГО:</div>
+            <div class="total" id="total">0 м²</div>
         </div>
-        <div class="cal-grid" id="calGrid"></div>
-      </div>
-    </div>
-    <div id="dayView" style="display:none">
-      <button class="back-btn" id="backToCal">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Календарь
-      </button>
-      <div class="day-header">
-        <div class="cal-title" id="dayTitle"></div>
-      </div>
-      <div class="day-stats">
-        <div class="day-stats-row">
-          <div class="day-total">
-            <div class="day-total-label">Сумма</div>
-            <div class="day-total-value" id="dayTotal">0 ₽</div>
-          </div>
-          <div class="day-units">
-            <div class="day-units-label">Объём работ</div>
-            <div class="day-units-value" id="dayUnits">—</div>
-          </div>
-        </div>
-      </div>
-      <div class="day-orders-scroll">
-        <div id="dayOrders"></div>
-      </div>
-    </div>
-  </div>
 
-  <div class="view" id="view-tariffs">
-    <div class="section-title">Тарифы на операции</div>
-    <div id="tariffList"></div>
-  </div>
-</div>
-
-<button class="fab" id="fabAdd">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-</button>
-
-<div class="tabs">
-  <button class="tab active" data-view="home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span class="tab-label">Главная</span>
-  </button>
-  <button class="tab" data-view="calendar">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    <span class="tab-label">Календарь</span>
-  </button>
-  <button class="tab" data-view="tariffs">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-    <span class="tab-label">Тарифы</span>
-  </button>
-</div>
-
-<div class="modal-bg" id="orderModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="orderModalTitle">Новый заказ</div>
-    <div class="field">
-      <label class="field-label">Дата</label>
-      <input type="date" class="input" id="fDate">
-    </div>
-    <div class="field">
-      <label class="field-label">Номер заказа</label>
-      <input type="text" class="input" id="fNumber" placeholder="Например: 2026-0042">
-    </div>
-    <div class="field">
-      <label class="field-label">Название изделия</label>
-      <input type="text" class="input" id="fName" placeholder="Например: Стол обеденный">
-    </div>
-    
-    <div class="items-section">
-      <div class="items-header">
-        <div class="items-title">Операции</div>
-        <button class="btn btn-small btn-secondary" id="addItemBtn" style="margin:0">+ Добавить</button>
-      </div>
-      <div id="itemsList"></div>
-    </div>
-
-    <div class="price-preview">
-      <span class="price-preview-label">Итого</span>
-      <span class="price-preview-value" id="pricePreview">0 ₽</span>
-    </div>
-    <button class="btn" id="saveOrder">Сохранить</button>
-    <button class="btn btn-secondary" id="cancelOrder" style="margin-top:8px">Отмена</button>
-  </div>
-</div>
-
-<div class="modal-bg" id="tariffModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="tariffModalTitle">Новый тариф</div>
-    <div class="field">
-      <label class="field-label">Название операции</label>
-      <input type="text" class="input" id="tName" placeholder="Например: Покраска">
-    </div>
-    <div class="field">
-      <label class="field-label">Тип расчёта</label>
-      <select class="select" id="tType">
-        <option value="sqm">За м² (площадь)</option>
-        <option value="pm">За пм (погонный метр)</option>
-        <option value="hour">За час</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-label">Цена, ₽</label>
-      <input type="number" class="input" id="tPrice" placeholder="0" min="0" step="0.01">
-    </div>
-    <button class="btn" id="saveTariff">Сохранить</button>
-    <button class="btn btn-secondary" id="cancelTariff" style="margin-top:8px">Отмена</button>
-  </div>
-</div>
-
-<div class="modal-bg" id="detailModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Заказ</div>
-    <div id="detailContent"></div>
-    <div class="detail-actions">
-      <button class="btn btn-secondary" id="editOrder">Редактировать</button>
-      <button class="btn btn-danger" id="deleteOrder">Удалить</button>
-    </div>
-    <button class="btn btn-secondary" id="closeDetail" style="margin-top:8px">Закрыть</button>
-  </div>
-</div>
-
-<input type="file" id="importFile" accept=".json" style="display:none">
-<div class="toast" id="toast"></div>
-
-<script>
-const LS_ORDERS = 'tabel_orders_v3';
-const LS_TARIFFS = 'tabel_tariffs_v3';
-const LS_THEME = 'tabel_theme_v1';
-
-let orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
-let tariffs = JSON.parse(localStorage.getItem(LS_TARIFFS) || '[]');
-let currentView = 'home';
-let calDate = new Date();
-let selectedDay = null;
-let editingOrderId = null;
-let editingTariffId = null;
-let currentDetailId = null;
-let currentItems = [];
-let searchQuery = '';
-
-if (tariffs.length === 0) {
-  tariffs = [
-    { id: uid(), name: 'Распил', type: 'sqm', price: 65 },
-    { id: uid(), name: 'Линейный распил', type: 'pm', price: 26 },
-    { id: uid(), name: 'Распил и склейка', type: 'sqm', price: 210 },
-    { id: uid(), name: 'Склейка', type: 'sqm', price: 165 },
-    { id: uid(), name: 'Пазы', type: 'pm', price: 30 },
-    { id: uid(), name: 'Фаска', type: 'pm', price: 16 },
-    { id: uid(), name: 'Время', type: 'hour', price: 330 }
-  ];
-  saveTariffs();
-}
-
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
-function saveOrders() { localStorage.setItem(LS_ORDERS, JSON.stringify(orders)); }
-function saveTariffs() { localStorage.setItem(LS_TARIFFS, JSON.stringify(tariffs)); }
-function fmtMoney(n) { return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽'; }
-function todayStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-}
-function currentMonthStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-}
-
-function getItemUnits(item) {
-  const t = tariffs.find(x => x.id === item.tariffId);
-  if (!t) return { sqm: 0, pm: 0, hour: 0 };
-  const qty = Number(item.quantity) || 1;
-  if (t.type === 'sqm') {
-    let sqm = 0;
-    const mode = item.mode || 'size';
-    if (mode === 'manual') {
-      sqm = Number(item.manualSqm) || 0;
-    } else {
-      sqm = (Number(item.width) * Number(item.height)) / 1000000;
-    }
-    return { sqm: sqm * qty, pm: 0, hour: 0 };
-  }
-  if (t.type === 'pm') {
-    return { sqm: 0, pm: Number(item.length) / 1000 * qty, hour: 0 };
-  }
-  if (t.type === 'hour') {
-    const hours = Number(item.hours) || 0;
-    const minutes = Number(item.minutes) || 0;
-    return { sqm: 0, pm: 0, hour: (hours + minutes / 60) * qty };
-  }
-  return { sqm: 0, pm: 0, hour: 0 };
-}
-
-function calcItemPrice(item) {
-  const t = tariffs.find(x => x.id === item.tariffId);
-  if (!t) return 0;
-  const qty = Number(item.quantity) || 1;
-  if (t.type === 'sqm') {
-    let sqm = 0;
-    const mode = item.mode || 'size';
-    if (mode === 'manual') {
-      sqm = Number(item.manualSqm) || 0;
-    } else {
-      sqm = (Number(item.width) * Number(item.height)) / 1000000;
-    }
-    return sqm * t.price * qty;
-  }
-  if (t.type === 'pm') {
-    const pm = Number(item.length) / 1000;
-    return pm * t.price * qty;
-  }
-  if (t.type === 'hour') {
-    const hours = Number(item.hours) || 0;
-    const minutes = Number(item.minutes) || 0;
-    return (hours + minutes / 60) * t.price * qty;
-  }
-  return 0;
-}
-
-function calcOrderPrice(o) {
-  return (o.items || []).reduce((s, item) => s + calcItemPrice(item), 0);
-}
-
-function calcOrdersUnits(ordersList) {
-  let sqm = 0, pm = 0, hour = 0;
-  ordersList.forEach(o => {
-    (o.items || []).forEach(item => {
-      const u = getItemUnits(item);
-      sqm += u.sqm;
-      pm += u.pm;
-      hour += u.hour;
-    });
-  });
-  return { sqm, pm, hour };
-}
-
-function formatUnits(units) {
-  const parts = [];
-  if (units.sqm > 0) {
-    parts.push(`<span class="unit-chip"><span class="unit-num">${fmtNum(units.sqm, 2)}</span><span class="unit-label">м²</span></span>`);
-  }
-  if (units.pm > 0) {
-    parts.push(`<span class="unit-chip"><span class="unit-num">${fmtNum(units.pm, 2)}</span><span class="unit-label">пм</span></span>`);
-  }
-  if (units.hour > 0) {
-    parts.push(`<span class="unit-chip"><span class="unit-num">${fmtNum(units.hour, 1)}</span><span class="unit-label">ч</span></span>`);
-  }
-  return parts.length > 0 ? parts.join('') : '<span style="color:var(--text-3)">—</span>';
-}
-
-function fmtNum(n, digits) {
-  const rounded = Math.round(n * Math.pow(10, digits)) / Math.pow(10, digits);
-  return rounded.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: digits });
-}
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem(LS_THEME, theme);
-  const icon = document.getElementById('themeIcon');
-  if (theme === 'light') {
-    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-  } else {
-    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-  }
-}
-applyTheme(localStorage.getItem(LS_THEME) || 'dark');
-document.getElementById('themeBtn').onclick = () => {
-  const cur = document.documentElement.getAttribute('data-theme');
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
-};
-
-document.querySelectorAll('.tab').forEach(t => {
-  t.onclick = () => switchView(t.dataset.view);
-});
-function switchView(v) {
-  currentView = v;
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === v));
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  if (v === 'home') renderHome();
-  if (v === 'calendar') { renderCalendar(); showCalendarList(); }
-  if (v === 'tariffs') renderTariffs();
-  window.scrollTo(0, 0);
-}
-
-function renderHome() {
-  const today = todayStr();
-  const currentMonth = currentMonthStr();
-  
-  const todayOrders = orders.filter(o => o.date === today);
-  const todaySum = todayOrders.reduce((s, o) => s + calcOrderPrice(o), 0);
-  
-  const monthOrders = orders.filter(o => o.date.substring(0, 7) === currentMonth);
-  const totalSum = monthOrders.reduce((s, o) => s + calcOrderPrice(o), 0);
-  const totalCount = monthOrders.length;
-  
-  document.getElementById('todaySum').textContent = fmtMoney(todaySum);
-  document.getElementById('todayCount').textContent = plural(todayOrders.length, 'заказ', 'заказа', 'заказов');
-  document.getElementById('totalSum').textContent = fmtMoney(totalSum);
-  document.getElementById('totalCount').textContent = totalCount;
-
-  let filtered = [...orders].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-  
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    filtered = filtered.filter(o => 
-      (o.number || '').toLowerCase().includes(q) ||
-      (o.name || '').toLowerCase().includes(q)
-    );
-  } else {
-    filtered = filtered.slice(0, 5);
-  }
-  
-  const box = document.getElementById('recentOrders');
-  if (orders.length === 0) {
-    box.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Пока нет заказов.<br>Нажми + чтобы добавить первый</div></div>';
-    return;
-  }
-  if (filtered.length === 0) {
-    box.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Ничего не найдено</div></div>';
-    return;
-  }
-  box.innerHTML = filtered.map(o => orderItemHtml(o)).join('');
-  box.querySelectorAll('[data-id]').forEach(el => {
-    el.onclick = () => openDetail(el.dataset.id);
-  });
-}
-
-document.getElementById('searchInput').oninput = (e) => {
-  searchQuery = e.target.value.trim();
-  renderHome();
-};
-
-function orderItemHtml(o) {
-  const price = calcOrderPrice(o);
-  const initial = (o.name || '?').charAt(0).toUpperCase();
-  const itemsCount = (o.items || []).length;
-  const meta = [
-    '№ ' + (o.number || '—'),
-    itemsCount + ' ' + plural(itemsCount, 'операция', 'операции', 'операций')
-  ].join(' • ');
-  return `<div class="order-item" data-id="${o.id}">
-    <div class="order-icon">${initial}</div>
-    <div class="order-info">
-      <div class="order-name">${escapeHtml(o.name || 'Без названия')}</div>
-      <div class="order-meta">${escapeHtml(meta)}</div>
-    </div>
-    <div class="order-price">+${fmtMoney(price)}</div>
-  </div>`;
-}
-
-function plural(n, one, two, five) {
-  n = Math.abs(n) % 100; const n1 = n % 10;
-  if (n > 10 && n < 20) return five;
-  if (n1 > 1 && n1 < 5) return two;
-  if (n1 === 1) return one;
-  return five;
-}
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-const WEEKDAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-
-function renderCalendar() {
-  const y = calDate.getFullYear(), m = calDate.getMonth();
-  document.getElementById('calTitle').textContent = MONTHS[m] + ' ' + y;
-  
-  const first = new Date(y, m, 1);
-  let startDay = first.getDay() - 1; if (startDay < 0) startDay = 6;
-  const daysInMonth = new Date(y, m+1, 0).getDate();
-  const prevDays = new Date(y, m, 0).getDate();
-  
-  const today = todayStr();
-  const ordersByDate = {};
-  orders.forEach(o => { ordersByDate[o.date] = (ordersByDate[o.date]||0) + 1; });
-  
-  let html = WEEKDAYS.map(w => `<div class="cal-weekday">${w}</div>`).join('');
-  
-  for (let i = startDay - 1; i >= 0; i--) {
-    html += `<div class="cal-day other">${prevDays - i}</div>`;
-  }
-  for (let d = 1; d <= daysInMonth; d++) {
-    const ds = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-    const classes = ['cal-day'];
-    if (ds === today) classes.push('today');
-    if (selectedDay === ds) classes.push('selected');
-    if (ordersByDate[ds]) classes.push('has-orders');
-    html += `<div class="${classes.join(' ')}" data-date="${ds}">${d}</div>`;
-  }
-  const total = startDay + daysInMonth;
-  const tail = (7 - total % 7) % 7;
-  for (let i = 1; i <= tail; i++) {
-    html += `<div class="cal-day other">${i}</div>`;
-  }
-  
-  const grid = document.getElementById('calGrid');
-  grid.innerHTML = html;
-  grid.querySelectorAll('.cal-day:not(.other)').forEach(el => {
-    el.onclick = () => {
-      selectedDay = el.dataset.date;
-      renderCalendar();
-      showDayView(selectedDay);
-    };
-  });
-}
-
-function showCalendarList() {
-  document.getElementById('calendarView').style.display = '';
-  document.getElementById('dayView').style.display = 'none';
-  selectedDay = null;
-}
-
-function showDayView(dateStr) {
-  document.getElementById('calendarView').style.display = 'none';
-  document.getElementById('dayView').style.display = '';
-  const d = new Date(dateStr);
-  const fmt = d.getDate() + ' ' + MONTHS[d.getMonth()].toLowerCase();
-  document.getElementById('dayTitle').textContent = fmt;
-  
-  const dayOrders = orders.filter(o => o.date === dateStr).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-  const sum = dayOrders.reduce((s,o) => s + calcOrderPrice(o), 0);
-  const units = calcOrdersUnits(dayOrders);
-  
-  document.getElementById('dayTotal').textContent = fmtMoney(sum);
-  document.getElementById('dayUnits').innerHTML = formatUnits(units);
-  
-  const box = document.getElementById('dayOrders');
-  if (dayOrders.length === 0) {
-    box.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Заказов за этот день нет</div></div>';
-    return;
-  }
-  box.innerHTML = dayOrders.map(o => orderItemHtml(o)).join('');
-  box.querySelectorAll('[data-id]').forEach(el => {
-    el.onclick = () => openDetail(el.dataset.id);
-  });
-}
-
-document.getElementById('prevMonth').onclick = () => { calDate.setMonth(calDate.getMonth()-1); renderCalendar(); };
-document.getElementById('nextMonth').onclick = () => { calDate.setMonth(calDate.getMonth()+1); renderCalendar(); };
-document.getElementById('backToCal').onclick = () => { renderCalendar(); showCalendarList(); };
-
-function renderTariffs() {
-  const box = document.getElementById('tariffList');
-  if (tariffs.length === 0) {
-    box.innerHTML = '<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">Добавь первый тариф</div></div>';
-    return;
-  }
-  box.innerHTML = tariffs.map(t => {
-    const unitLabel = t.type === 'sqm' ? '₽/м²' : t.type === 'pm' ? '₽/пм' : '₽/час';
-    return `<div class="tariff-item">
-      <div class="tariff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-      <div class="tariff-info">
-        <div class="tariff-name">${escapeHtml(t.name)}</div>
-        <div class="tariff-meta">${t.type === 'sqm' ? 'По площади' : t.type === 'pm' ? 'Погонный метр' : 'За час'}</div>
-      </div>
-      <div class="tariff-price">${fmtMoney(t.price)} <span style="color:var(--text-3);font-weight:400;font-size:12px">${unitLabel}</span></div>
-      <div class="tariff-actions">
-        <button class="mini-btn" data-edit="${t.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-        <button class="mini-btn danger" data-del="${t.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
-      </div>
-    </div>`;
-  }).join('');
-  box.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openTariffModal(b.dataset.edit));
-  box.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteTariff(b.dataset.del));
-}
-
-function deleteTariff(id) {
-  const used = orders.some(o => (o.items || []).some(item => item.tariffId === id));
-  if (used) { toast('Тариф используется в заказах'); return; }
-  if (!confirm('Удалить тариф?')) return;
-  tariffs = tariffs.filter(t => t.id !== id);
-  saveTariffs(); renderTariffs();
-  toast('Тариф удалён');
-}
-
-const orderModal = document.getElementById('orderModal');
-const fabAdd = document.getElementById('fabAdd');
-
-fabAdd.onclick = () => openOrderModal();
-
-function openOrderModal(orderId = null) {
-  editingOrderId = orderId;
-  document.getElementById('orderModalTitle').textContent = orderId ? 'Редактировать заказ' : 'Новый заказ';
-  
-  if (orderId) {
-    const o = orders.find(x => x.id === orderId);
-    document.getElementById('fDate').value = o.date;
-    document.getElementById('fNumber').value = o.number || '';
-    document.getElementById('fName').value = o.name || '';
-    currentItems = JSON.parse(JSON.stringify(o.items || []));
-  } else {
-    document.getElementById('fDate').value = selectedDay || todayStr();
-    document.getElementById('fNumber').value = '';
-    document.getElementById('fName').value = '';
-    currentItems = [];
-  }
-  renderItems();
-  updatePricePreview();
-  orderModal.classList.add('show');
-}
-
-function closeOrderModal() { orderModal.classList.remove('show'); editingOrderId = null; }
-document.getElementById('cancelOrder').onclick = closeOrderModal;
-orderModal.onclick = e => { if (e.target === orderModal) closeOrderModal(); };
-
-document.getElementById('addItemBtn').onclick = () => {
-  currentItems.push({
-    id: uid(),
-    tariffId: tariffs.length > 0 ? tariffs[0].id : '',
-    mode: 'size',
-    width: '',
-    height: '',
-    manualSqm: '',
-    length: '',
-    hours: '',
-    minutes: '',
-    quantity: 1
-  });
-  renderItems();
-  updatePricePreview();
-};
-
-function renderItems() {
-  const box = document.getElementById('itemsList');
-  if (currentItems.length === 0) {
-    box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-2);font-size:13px">Добавь хотя бы одну операцию</div>';
-    return;
-  }
-  
-  box.innerHTML = currentItems.map((item, idx) => {
-    const t = tariffs.find(x => x.id === item.tariffId);
-    let fieldsHtml = '';
-    const mode = item.mode || 'size';
-    
-    if (t) {
-      if (t.type === 'sqm') {
-        const switchHtml = `
-          <div class="mode-switch">
-            <button type="button" class="mode-switch-btn ${mode === 'size' ? 'active' : ''}" data-mode-switch="${idx}" data-mode="size">По размерам</button>
-            <button type="button" class="mode-switch-btn ${mode === 'manual' ? 'active' : ''}" data-mode-switch="${idx}" data-mode="manual">м² вручную</button>
-          </div>
-        `;
-        if (mode === 'manual') {
-          fieldsHtml = switchHtml + `
-            <div class="field" style="margin-bottom:8px">
-              <label class="field-label">Площадь, м²</label>
-              <input type="number" class="input" data-idx="${idx}" data-field="manualSqm" value="${item.manualSqm || ''}" placeholder="1.5" min="0" step="0.01">
+        <div class="input-row" id="inputRow">
+            <div class="input-group">
+                <label>Длина (м)</label>
+                <input type="number" id="length" step="0.01" placeholder="0.00">
             </div>
-          `;
-        } else {
-          fieldsHtml = switchHtml + `
-            <div class="row-2">
-              <div class="field" style="margin-bottom:8px">
-                <label class="field-label">Ширина, мм</label>
-                <input type="number" class="input" data-idx="${idx}" data-field="width" value="${item.width || ''}" placeholder="2100" min="0" step="1">
-              </div>
-              <div class="field" style="margin-bottom:8px">
-                <label class="field-label">Высота, мм</label>
-                <input type="number" class="input" data-idx="${idx}" data-field="height" value="${item.height || ''}" placeholder="950" min="0" step="1">
-              </div>
+            <div class="input-group" id="widthGroup">
+                <label>Ширина (м)</label>
+                <input type="number" id="width" step="0.01" placeholder="0.00">
             </div>
-          `;
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-add" id="addBtn">+</button>
+            <button class="btn btn-clear" id="clearBtn">C</button>
+            <button class="btn btn-equals" id="equalsBtn">=</button>
+        </div>
+
+        <div class="save-section" id="saveSection">
+            <input type="text" id="orderNumber" placeholder="Номер заказа">
+            <textarea id="orderComment" placeholder="Комментарий..."></textarea>
+            <button class="btn-save" id="saveBtn">Сохранить заказ</button>
+        </div>
+
+        <div class="orders-feed" id="ordersFeed">
+            <div class="empty-state">Заказы появятся здесь</div>
+        </div>
+    </div>
+
+    <script>
+        let mode = 'square';
+        let measurements = [];
+        let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        const widthGroup = document.getElementById('widthGroup');
+        const lengthInput = document.getElementById('length');
+        const widthInput = document.getElementById('width');
+        const addBtn = document.getElementById('addBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const equalsBtn = document.getElementById('equalsBtn');
+        const totalDisplay = document.getElementById('total');
+        const measurementsDisplay = document.getElementById('measurements');
+        const saveSection = document.getElementById('saveSection');
+        const saveBtn = document.getElementById('saveBtn');
+        const ordersFeed = document.getElementById('ordersFeed');
+
+        // Переключение режима
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                mode = btn.dataset.mode;
+                widthGroup.style.display = mode === 'square' ? 'flex' : 'none';
+                reset();
+            });
+        });
+
+        // Добавить измерение
+        addBtn.addEventListener('click', () => {
+            const length = parseFloat(lengthInput.value);
+            if (isNaN(length) || length <= 0) {
+                alert('Введите длину');
+                return;
+            }
+
+            let value;
+            if (mode === 'square') {
+                const width = parseFloat(widthInput.value);
+                if (isNaN(width) || width <= 0) {
+                    alert('Введите ширину');
+                    return;
+                }
+                value = length * width;
+                measurements.push({ length, width, value });
+            } else {
+                value = length;
+                measurements.push({ length, value });
+            }
+
+            updateDisplay();
+            lengthInput.value = '';
+            widthInput.value = '';
+            lengthInput.focus();
+        });
+
+        // Очистить
+        clearBtn.addEventListener('click', reset);
+
+        // Равно
+        equalsBtn.addEventListener('click', () => {
+            if (measurements.length === 0) {
+                alert('Добавьте хотя бы одно измерение');
+                return;
+            }
+            saveSection.classList.add('active');
+            document.getElementById('orderNumber').focus();
+        });
+
+        // Сохранить заказ
+        saveBtn.addEventListener('click', () => {
+            const orderNumber = document.getElementById('orderNumber').value.trim();
+            const comment = document.getElementById('orderComment').value.trim();
+
+            if (!orderNumber) {
+                alert('Введите номер заказа');
+                return;
+            }
+
+            const total = measurements.reduce((sum, m) => sum + m.value, 0);
+            const order = {
+                id: Date.now(),
+                number: orderNumber,
+                comment: comment,
+                value: total.toFixed(2),
+                unit: mode === 'square' ? 'м²' : 'п.м.',
+                date: new Date().toLocaleString('ru-RU')
+            };
+
+            orders.unshift(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            document.getElementById('orderNumber').value = '';
+            document.getElementById('orderComment').value = '';
+            saveSection.classList.remove('active');
+
+            renderOrders();
+            reset();
+        });
+
+        function updateDisplay() {
+            const total = measurements.reduce((sum, m) => sum + m.value, 0);
+            const unit = mode === 'square' ? 'м²' : 'п.м.';
+            totalDisplay.textContent = `${total.toFixed(2)} ${unit}`;
+
+            measurementsDisplay.innerHTML = measurements.map((m, i) => {
+                if (mode === 'square') {
+                    return `<div class="measurement-item">
+                        <span>${m.length} × ${m.width} м</span>
+                        <span class="value">${m.value.toFixed(2)} м²</span>
+                    </div>`;
+                } else {
+                    return `<div class="measurement-item">
+                        <span>${m.length} м</span>
+                        <span class="value">${m.value.toFixed(2)} п.м.</span>
+                    </div>`;
+                }
+            }).join('');
         }
-      } else if (t.type === 'pm') {
-        fieldsHtml = `
-          <div class="field" style="margin-bottom:8px">
-            <label class="field-label">Длина, мм</label>
-            <input type="number" class="input" data-idx="${idx}" data-field="length" value="${item.length || ''}" placeholder="3000" min="0" step="1">
-          </div>
-        `;
-      } else if (t.type === 'hour') {
-        fieldsHtml = `
-          <div class="row-2">
-            <div class="field" style="margin-bottom:8px">
-              <label class="field-label">Часы</label>
-              <input type="number" class="input" data-idx="${idx}" data-field="hours" value="${item.hours || ''}" placeholder="0" min="0" step="1">
-            </div>
-            <div class="field" style="margin-bottom:8px">
-              <label class="field-label">Минуты</label>
-              <input type="number" class="input" data-idx="${idx}" data-field="minutes" value="${item.minutes || ''}" placeholder="0" min="0" max="59" step="1">
-            </div>
-          </div>
-        `;
-      }
-    }
-    
-    const price = calcItemPrice(item);
-    
-    return `
-      <div class="item-card">
-        <button class="item-remove" data-remove="${idx}">×</button>
-        <div class="field" style="margin-bottom:8px">
-          <label class="field-label">Тариф</label>
-          <select class="select" data-idx="${idx}" data-field="tariffId">
-            ${tariffs.map(t => `<option value="${t.id}" ${t.id === item.tariffId ? 'selected' : ''}>${escapeHtml(t.name)} — ${fmtMoney(t.price)}/${t.type==='sqm'?'м²':t.type==='pm'?'пм':'час'}</option>`).join('')}
-          </select>
-        </div>
-        ${fieldsHtml}
-        <div class="field" style="margin-bottom:0">
-          <label class="field-label">Количество</label>
-          <input type="number" class="input" data-idx="${idx}" data-field="quantity" value="${item.quantity || 1}" min="1" step="1">
-        </div>
-        <div class="item-price">${fmtMoney(price)}</div>
-      </div>
-    `;
-  }).join('');
-  
-  box.querySelectorAll('[data-remove]').forEach(btn => {
-    btn.onclick = () => {
-      currentItems.splice(parseInt(btn.dataset.remove), 1);
-      renderItems();
-      updatePricePreview();
-    };
-  });
-  
-  box.querySelectorAll('[data-mode-switch]').forEach(btn => {
-    btn.onclick = () => {
-      const idx = parseInt(btn.dataset.modeSwitch);
-      currentItems[idx].mode = btn.dataset.mode;
-      renderItems();
-      updatePricePreview();
-    };
-  });
-  
-  box.querySelectorAll('input, select').forEach(input => {
-    input.oninput = () => {
-      const idx = parseInt(input.dataset.idx);
-      const field = input.dataset.field;
-      currentItems[idx][field] = input.value;
-      updatePricePreview();
-      if (field === 'tariffId') renderItems();
-    };
-  });
-}
 
-function updatePricePreview() {
-  const total = currentItems.reduce((s, item) => s + calcItemPrice(item), 0);
-  document.getElementById('pricePreview').textContent = fmtMoney(total);
-}
+        function reset() {
+            measurements = [];
+            lengthInput.value = '';
+            widthInput.value = '';
+            totalDisplay.textContent = mode === 'square' ? '0 м²' : '0 п.м.';
+            measurementsDisplay.innerHTML = '';
+            saveSection.classList.remove('active');
+        }
 
-document.getElementById('saveOrder').onclick = () => {
-  const date = document.getElementById('fDate').value;
-  const number = document.getElementById('fNumber').value.trim();
-  const name = document.getElementById('fName').value.trim();
-  
-  if (!date) { toast('Укажи дату'); return; }
-  if (!name && !number) { toast('Укажи название или номер'); return; }
-  if (currentItems.length === 0) { toast('Добавь хотя бы одну операцию'); return; }
-  
-  const validItems = currentItems.filter(item => {
-    const t = tariffs.find(x => x.id === item.tariffId);
-    if (!t) return false;
-    const mode = item.mode || 'size';
-    if (t.type === 'sqm') {
-      if (mode === 'manual') {
-        return Number(item.manualSqm) > 0;
-      } else {
-        return Number(item.width) > 0 && Number(item.height) > 0;
-      }
-    }
-    if (t.type === 'pm') return Number(item.length) > 0;
-    if (t.type === 'hour') return Number(item.hours) > 0 || Number(item.minutes) > 0;
-    return true;
-  });
-  
-  if (validItems.length === 0) { toast('Заполни размеры для всех операций'); return; }
-  
-  if (editingOrderId) {
-    const o = orders.find(x => x.id === editingOrderId);
-    Object.assign(o, { date, number, name, items: validItems });
-    toast('Заказ обновлён');
-  } else {
-    orders.push({
-      id: uid(), date, number, name, items: validItems,
-      createdAt: Date.now()
-    });
-    toast('Заказ создан');
-  }
-  saveOrders();
-  closeOrderModal();
-  refreshCurrentView();
-};
+        function renderOrders() {
+            if (orders.length === 0) {
+                ordersFeed.innerHTML = '<div class="empty-state">Заказы появятся здесь</div>';
+                return;
+            }
 
-function refreshCurrentView() {
-  if (currentView === 'home') renderHome();
-  if (currentView === 'calendar') {
-    renderCalendar();
-    if (selectedDay) showDayView(selectedDay);
-  }
-}
+            ordersFeed.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-number">#${order.number}</span>
+                        <span class="order-date">${order.date}</span>
+                    </div>
+                    <div class="order-value">${order.value} ${order.unit}</div>
+                    ${order.comment ? `<div class="order-comment">${order.comment}</div>` : ''}
+                </div>
+            `).join('');
+        }
 
-const detailModal = document.getElementById('detailModal');
-function openDetail(id) {
-  currentDetailId = id;
-  const o = orders.find(x => x.id === id);
-  if (!o) return;
-  const price = calcOrderPrice(o);
-  const units = calcOrdersUnits([o]);
-  const d = new Date(o.date);
-  const dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getFullYear();
-  
-  let itemsHtml = (o.items || []).map(item => {
-    const t = tariffs.find(x => x.id === item.tariffId);
-    if (!t) return '';
-    let sizeStr = '';
-    let unitStr = '';
-    const u = getItemUnits(item);
-    const mode = item.mode || 'size';
-    
-    if (t.type === 'sqm') {
-      if (mode === 'manual') {
-        sizeStr = `${fmtNum(Number(item.manualSqm) || 0, 2)} м² (вручную)`;
-      } else {
-        sizeStr = `${item.width}×${item.height} мм`;
-      }
-      unitStr = `${fmtNum(u.sqm, 2)} м²`;
-    } else if (t.type === 'pm') {
-      sizeStr = `${item.length} мм`;
-      unitStr = `${fmtNum(u.pm, 2)} пм`;
-    } else if (t.type === 'hour') {
-      const h = Number(item.hours) || 0;
-      const m = Number(item.minutes) || 0;
-      if (h > 0 && m > 0) {
-        sizeStr = `${h} ч ${m} мин`;
-      } else if (h > 0) {
-        sizeStr = `${h} ч`;
-      } else {
-        sizeStr = `${m} мин`;
-      }
-      unitStr = `${fmtNum(u.hour, 2)} ч`;
-    }
-    const itemPrice = calcItemPrice(item);
-    return `
-      <div style="padding:10px;background:var(--card-2);border-radius:10px;margin-bottom:6px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-weight:600;font-size:14px">${escapeHtml(t.name)}</div>
-          <div style="font-weight:700;color:var(--green)">${fmtMoney(itemPrice)}</div>
-        </div>
-        <div style="font-size:12px;color:var(--text-2);margin-top:4px;display:flex;justify-content:space-between;align-items:center">
-          <span>${sizeStr} • ×${item.quantity}</span>
-          <span style="color:var(--accent);font-weight:600">${unitStr}</span>
-        </div>
-      </div>
-    `;
-  }).join('');
-  
-  let html = `
-    <div style="display:flex;gap:12px;margin-bottom:16px">
-      <div class="order-icon" style="width:56px;height:56px;font-size:22px">${(o.name||'?').charAt(0).toUpperCase()}</div>
-      <div style="flex:1">
-        <div style="font-size:18px;font-weight:700">${escapeHtml(o.name || 'Без названия')}</div>
-        <div style="color:var(--text-2);font-size:13px;margin-top:2px">${dateStr}</div>
-      </div>
-    </div>
-    <div class="price-preview" style="margin-bottom:12px">
-      <span class="price-preview-label">Номер заказа</span>
-      <span style="font-weight:700">${escapeHtml(o.number || '—')}</span>
-    </div>
-    <div class="detail-units">
-      <div class="detail-units-label">Объём работ</div>
-      <div class="detail-units-value">${formatUnits(units)}</div>
-    </div>
-    <div style="margin-bottom:12px">
-      <div style="font-size:13px;color:var(--text-2);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Операции</div>
-      ${itemsHtml}
-    </div>
-    <div class="price-preview" style="background:linear-gradient(135deg,rgba(46,213,115,0.1),rgba(46,213,115,0.05))">
-      <span class="price-preview-label">Итого</span>
-      <span class="price-preview-value" style="color:var(--green)">${fmtMoney(price)}</span>
-    </div>
-  `;
-  document.getElementById('detailContent').innerHTML = html;
-  detailModal.classList.add('show');
-}
-document.getElementById('closeDetail').onclick = () => detailModal.classList.remove('show');
-detailModal.onclick = e => { if (e.target === detailModal) detailModal.classList.remove('show'); };
-
-document.getElementById('editOrder').onclick = () => {
-  detailModal.classList.remove('show');
-  openOrderModal(currentDetailId);
-};
-
-document.getElementById('deleteOrder').onclick = () => {
-  if (!confirm('Удалить заказ?')) return;
-  orders = orders.filter(o => o.id !== currentDetailId);
-  saveOrders();
-  detailModal.classList.remove('show');
-  toast('Заказ удалён');
-  refreshCurrentView();
-};
-
-const tariffModal = document.getElementById('tariffModal');
-function openTariffModal(id = null) {
-  editingTariffId = id;
-  document.getElementById('tariffModalTitle').textContent = id ? 'Редактировать тариф' : 'Новый тариф';
-  if (id) {
-    const t = tariffs.find(x => x.id === id);
-    document.getElementById('tName').value = t.name;
-    document.getElementById('tType').value = t.type;
-    document.getElementById('tPrice').value = t.price;
-  } else {
-    document.getElementById('tName').value = '';
-    document.getElementById('tType').value = 'sqm';
-    document.getElementById('tPrice').value = '';
-  }
-  tariffModal.classList.add('show');
-}
-function closeTariffModal() { tariffModal.classList.remove('show'); editingTariffId = null; }
-document.getElementById('cancelTariff').onclick = closeTariffModal;
-tariffModal.onclick = e => { if (e.target === tariffModal) closeTariffModal(); };
-
-document.getElementById('saveTariff').onclick = () => {
-  const name = document.getElementById('tName').value.trim();
-  const type = document.getElementById('tType').value;
-  const price = parseFloat(document.getElementById('tPrice').value);
-  if (!name) { toast('Укажи название'); return; }
-  if (!price || price <= 0) { toast('Укажи цену'); return; }
-  
-  if (editingTariffId) {
-    const t = tariffs.find(x => x.id === editingTariffId);
-    Object.assign(t, { name, type, price });
-    toast('Тариф обновлён');
-  } else {
-    tariffs.push({ id: uid(), name, type, price });
-    toast('Тариф создан');
-  }
-  saveTariffs();
-  closeTariffModal();
-  renderTariffs();
-};
-
-// ===== ЭКСПОРТ =====
-function escCsv(s) {
-  if (s === null || s === undefined) return '';
-  s = String(s);
-  if (s.includes(';') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
-    return '"' + s.replace(/"/g, '""') + '"';
-  }
-  return s;
-}
-
-function downloadFile(filename, content, mime) {
-  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 100);
-}
-
-function formatDateRu(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d)) return dateStr;
-  return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
-}
-
-function getItemSizeStr(item) {
-  const t = tariffs.find(x => x.id === item.tariffId);
-  if (!t) return '';
-  const mode = item.mode || 'size';
-  if (t.type === 'sqm') {
-    if (mode === 'manual') return `${Number(item.manualSqm) || 0} м²`;
-    return `${item.width || 0}×${item.height || 0} мм`;
-  }
-  if (t.type === 'pm') return `${item.length || 0} мм`;
-  if (t.type === 'hour') {
-    const h = Number(item.hours) || 0;
-    const m = Number(item.minutes) || 0;
-    if (h > 0 && m > 0) return `${h}ч ${m}мин`;
-    if (h > 0) return `${h}ч`;
-    return `${m}мин`;
-  }
-  return '';
-}
-
-function getItemVolumeStr(item) {
-  const u = getItemUnits(item);
-  const t = tariffs.find(x => x.id === item.tariffId);
-  if (!t) return '';
-  if (t.type === 'sqm') return `${u.sqm.toFixed(2)} м²`;
-  if (t.type === 'pm') return `${u.pm.toFixed(2)} пм`;
-  if (t.type === 'hour') return `${u.hour.toFixed(2)} ч`;
-  return '';
-}
-
-function exportCsvOrders() {
-  if (orders.length === 0) {
-    toast('Нет данных для экспорта');
-    return;
-  }
-  
-  const BOM = '\uFEFF';
-  const headers = ['Дата', 'Номер заказа', 'Название изделия', 'Сумма (₽)', 'Площадь (м²)', 'Пм', 'Часы', 'Количество операций'];
-  let rows = [headers.map(escCsv).join(';')];
-  
-  const sorted = [...orders].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-  
-  sorted.forEach(o => {
-    const price = calcOrderPrice(o);
-    const units = calcOrdersUnits([o]);
-    const row = [
-      formatDateRu(o.date),
-      o.number || '',
-      o.name || '',
-      Math.round(price),
-      units.sqm.toFixed(2).replace('.', ','),
-      units.pm.toFixed(2).replace('.', ','),
-      units.hour.toFixed(2).replace('.', ','),
-      (o.items || []).length
-    ].map(escCsv).join(';');
-    rows.push(row);
-  });
-  
-  // Итоговая строка
-  const totalSum = orders.reduce((s, o) => s + calcOrderPrice(o), 0);
-  const totalUnits = calcOrdersUnits(orders);
-  rows.push('');
-  rows.push([
-    'ИТОГО',
-    orders.length + ' ' + plural(orders.length, 'заказ', 'заказа', 'заказов'),
-    '',
-    Math.round(totalSum),
-    totalUnits.sqm.toFixed(2).replace('.', ','),
-    totalUnits.pm.toFixed(2).replace('.', ','),
-    totalUnits.hour.toFixed(2).replace('.', ','),
-    ''
-  ].map(escCsv).join(';'));
-  
-  const content = BOM + rows.join('\r\n');
-  downloadFile('tabel_orders_' + todayStr() + '.csv', content, 'text/csv');
-  toast('✓ Заказы экспортированы');
-}
-
-function exportCsvOperations() {
-  if (orders.length === 0) {
-    toast('Нет данных для экспорта');
-    return;
-  }
-  
-  const BOM = '\uFEFF';
-  const headers = ['Дата', 'Номер заказа', 'Изделие', 'Операция', 'Тип расчёта', 'Размеры', 'Кол-во', 'Объём', 'Цена (₽)', 'Итого по заказу (₽)'];
-  let rows = [headers.map(escCsv).join(';')];
-  
-  const sorted = [...orders].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-  
-  sorted.forEach(o => {
-    const orderTotal = calcOrderPrice(o);
-    (o.items || []).forEach((item, idx) => {
-      const t = tariffs.find(x => x.id === item.tariffId);
-      if (!t) return;
-      const price = calcItemPrice(item);
-      const typeStr = t.type === 'sqm' ? 'Площадь' : t.type === 'pm' ? 'Погонный метр' : 'Часы';
-      
-      const row = [
-        formatDateRu(o.date),
-        o.number || '',
-        o.name || '',
-        t.name,
-        typeStr,
-        getItemSizeStr(item),
-        Number(item.quantity) || 1,
-        getItemVolumeStr(item).replace('.', ','),
-        Math.round(price),
-        idx === 0 ? Math.round(orderTotal) : ''
-      ].map(escCsv).join(';');
-      rows.push(row);
-    });
-  });
-  
-  // Итоговая строка
-  const totalSum = orders.reduce((s, o) => s + calcOrderPrice(o), 0);
-  const totalUnits = calcOrdersUnits(orders);
-  rows.push('');
-  rows.push([
-    'ИТОГО',
-    orders.length + ' ' + plural(orders.length, 'заказ', 'заказа', 'заказов'),
-    '',
-    '',
-    '',
-    '',
-    '',
-    `${totalUnits.sqm.toFixed(2).replace('.', ',')} м² / ${totalUnits.pm.toFixed(2).replace('.', ',')} пм / ${totalUnits.hour.toFixed(2).replace('.', ',')} ч`,
-    '',
-    Math.round(totalSum)
-  ].map(escCsv).join(';'));
-  
-  const content = BOM + rows.join('\r\n');
-  downloadFile('tabel_operations_' + todayStr() + '.csv', content, 'text/csv');
-  toast('✓ Операции экспортированы');
-}
-
-function exportJson() {
-  const data = { orders, tariffs, exportedAt: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'tabel-backup-' + todayStr() + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('✓ Бэкап сохранён');
-}
-
-// Меню экспорта
-const exportBtn = document.getElementById('exportBtn');
-const exportMenu = document.getElementById('exportMenu');
-
-exportBtn.onclick = (e) => {
-  e.stopPropagation();
-  exportMenu.classList.toggle('show');
-};
-
-document.addEventListener('click', (e) => {
-  if (!exportMenu.contains(e.target) && e.target !== exportBtn) {
-    exportMenu.classList.remove('show');
-  }
-});
-
-document.getElementById('exportCsvOrders').onclick = () => {
-  exportMenu.classList.remove('show');
-  exportCsvOrders();
-};
-
-document.getElementById('exportCsvOperations').onclick = () => {
-  exportMenu.classList.remove('show');
-  exportCsvOperations();
-};
-
-document.getElementById('exportJson').onclick = () => {
-  exportMenu.classList.remove('show');
-  exportJson();
-};
-
-document.getElementById('importBtn').onclick = () => document.getElementById('importFile').click();
-document.getElementById('importFile').onchange = e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if (!data.orders || !data.tariffs) throw new Error('bad format');
-      if (!confirm(`Заменить текущие данные? Будет импортировано ${data.orders.length} заказов и ${data.tariffs.length} тарифов.`)) return;
-      orders = data.orders;
-      tariffs = data.tariffs;
-      saveOrders(); saveTariffs();
-      toast('✓ Данные импортированы');
-      refreshCurrentView();
-      if (currentView === 'tariffs') renderTariffs();
-    } catch (err) {
-      toast('Ошибка файла');
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
-};
-
-renderHome();
-
-function scheduleNextDay() {
-  const now = new Date();
-  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-  const ms = tomorrow - now + 1000;
-  setTimeout(() => {
-    if (currentView === 'home') renderHome();
-    scheduleNextDay();
-  }, ms);
-}
-scheduleNextDay();
-</script>
+        // Инициализация
+        renderOrders();
+    </script>
 </body>
 </html>
