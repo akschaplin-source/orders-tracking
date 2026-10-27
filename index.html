@@ -129,6 +129,10 @@
             flex-direction: column;
         }
 
+        .input-group.full-width {
+            flex: 1 1 100%;
+        }
+
         .input-group label {
             font-size: 11px;
             color: #888;
@@ -147,6 +151,7 @@
             font-weight: 600;
             text-align: center;
             transition: all 0.3s;
+            width: 100%;
         }
 
         .input-group input:focus {
@@ -160,6 +165,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-bottom: 16px;
+            align-items: stretch;
         }
 
         .btn {
@@ -171,6 +177,10 @@
             cursor: pointer;
             transition: all 0.2s;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 56px;
         }
 
         .btn:active {
@@ -347,7 +357,7 @@
         </div>
 
         <div class="input-row" id="inputRow">
-            <div class="input-group">
+            <div class="input-group full-width" id="lengthGroup">
                 <label>Длина (м)</label>
                 <input type="number" id="length" step="0.01" placeholder="0.00">
             </div>
@@ -381,6 +391,7 @@
 
         const modeBtns = document.querySelectorAll('.mode-btn');
         const widthGroup = document.getElementById('widthGroup');
+        const lengthGroup = document.getElementById('lengthGroup');
         const lengthInput = document.getElementById('length');
         const widthInput = document.getElementById('width');
         const addBtn = document.getElementById('addBtn');
@@ -398,7 +409,14 @@
                 modeBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 mode = btn.dataset.mode;
-                widthGroup.style.display = mode === 'square' ? 'flex' : 'none';
+                
+                if (mode === 'square') {
+                    widthGroup.style.display = 'flex';
+                    lengthGroup.classList.remove('full-width');
+                } else {
+                    widthGroup.style.display = 'none';
+                    lengthGroup.classList.add('full-width');
+                }
                 reset();
             });
         });
