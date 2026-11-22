@@ -1,7 +1,7 @@
 {
   "appId": "com.musicplayer.app",
   "appName": "Music Player",
-  "webDir": ".",
+  "webDir": "www",
   "server": {
     "androidScheme": "https"
   }
