@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор заказов</title>
+    <title>Музыкальный плеер</title>
     <style>
         * {
             margin: 0;
@@ -12,536 +12,494 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #fff;
+            overflow-x: hidden;
         }
 
-        .calculator {
-            background: #000;
-            border-radius: 24px;
-            padding: 20px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 20px 60px rgba(255, 165, 0, 0.3);
-            border: 2px solid #ff8c00;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 20px;
-            color: #ffa500;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .mode-switch {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .mode-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #ff8c00;
-            background: transparent;
-            color: #ff8c00;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .mode-btn.active {
-            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
-            color: #000;
-            border-color: #ffa500;
-        }
-
-        .display {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            min-height: 100px;
-            border: 1px solid #333;
-        }
-
-        .measurements {
-            max-height: 120px;
-            overflow-y: auto;
-            margin-bottom: 12px;
-        }
-
-        .measurement-item {
-            background: #2d2d2d;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 3px solid #ff8c00;
-        }
-
-        .measurement-item .value {
-            color: #ffa500;
-            font-weight: 600;
-        }
-
-        .total {
-            font-size: 28px;
-            font-weight: 700;
-            color: #ffa500;
-            text-align: right;
-            padding: 8px 0;
-            border-top: 2px solid #333;
-        }
-
-        .total-label {
-            font-size: 12px;
-            color: #888;
-            text-align: right;
-            margin-bottom: 4px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .input-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .input-group.full-width {
-            flex: 1 1 100%;
-        }
-
-        .input-group label {
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-group input {
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 12px;
-            color: #fff;
-            font-size: 16px;
-            font-weight: 600;
-            text-align: center;
-            transition: all 0.3s;
+        .player-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
             width: 100%;
         }
 
-        .input-group input:focus {
-            outline: none;
-            border-color: #ff8c00;
-            background: #2d2d2d;
-        }
-
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-            align-items: stretch;
-        }
-
-        .btn {
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
+        .album-art {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 56px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            animation: rotate 20s linear infinite paused;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn:active {
+        .album-art::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+        }
+
+        .album-art.playing {
+            animation-play-state: running;
+        }
+
+        .album-art i {
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .track-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .track-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .track-artist {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .control-btn:active {
             transform: scale(0.95);
         }
 
-        .btn-add {
-            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
-            color: #000;
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 10px 25px rgba(240, 147, 251, 0.4);
         }
 
-        .btn-clear {
-            background: #2d2d2d;
-            color: #ff8c00;
-            border: 2px solid #ff8c00;
+        .play-btn:hover {
+            box-shadow: 0 15px 35px rgba(240, 147, 251, 0.6);
         }
 
-        .btn-equals {
-            background: linear-gradient(135deg, #ffa500 0%, #ffcc00 100%);
-            color: #000;
-            grid-column: span 3;
+        .control-btn i {
+            font-size: 24px;
         }
 
-        .save-section {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
-            display: none;
-            border: 1px solid #333;
+        .play-btn i {
+            font-size: 32px;
         }
 
-        .save-section.active {
-            display: block;
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
-        .save-section input,
-        .save-section textarea {
-            width: 100%;
-            background: #2d2d2d;
-            border: 2px solid #333;
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
-            font-size: 14px;
-            margin-bottom: 8px;
-            font-family: inherit;
+        .volume-icon {
+            color: white;
+            font-size: 20px;
         }
 
-        .save-section textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .save-section input:focus,
-        .save-section textarea:focus {
-            outline: none;
-            border-color: #ff8c00;
-        }
-
-        .btn-save {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 700;
+        .volume-slider {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
             cursor: pointer;
-            text-transform: uppercase;
+            position: relative;
         }
 
-        .orders-feed {
-            max-height: 300px;
+        .volume-level {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            width: 70%;
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .playlist {
+            margin-top: 25px;
+            max-height: 200px;
             overflow-y: auto;
         }
 
-        .order-card {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid #ff8c00;
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .playlist-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 15px;
+            border-radius: 10px;
             margin-bottom: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .order-number {
-            font-size: 14px;
-            font-weight: 700;
-            color: #ffa500;
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
         }
 
-        .order-date {
-            font-size: 11px;
-            color: #888;
+        .playlist-item.active {
+            background: linear-gradient(90deg, rgba(240, 147, 251, 0.3) 0%, rgba(245, 87, 108, 0.3) 100%);
         }
 
-        .order-value {
+        .playlist-item i {
             font-size: 18px;
-            font-weight: 700;
-            color: #ffcc00;
-            margin-bottom: 6px;
         }
 
-        .order-comment {
-            font-size: 13px;
-            color: #ccc;
-            line-height: 1.4;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 13px;
-        }
-
-        ::-webkit-scrollbar {
+        .playlist::-webkit-scrollbar {
             width: 6px;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-            border-radius: 3px;
+        .playlist::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #ff8c00;
-            border-radius: 3px;
+        .playlist::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
         }
 
-        @media (max-width: 400px) {
-            .calculator {
-                padding: 16px;
+        @media (max-width: 600px) {
+            .player-container {
+                padding: 30px 20px;
             }
 
-            .header h1 {
-                font-size: 18px;
+            .album-art {
+                width: 200px;
+                height: 200px;
             }
 
-            .total {
-                font-size: 24px;
+            .album-art i {
+                font-size: 60px;
             }
 
-            .btn {
-                padding: 14px;
-                font-size: 16px;
+            .track-title {
+                font-size: 20px;
+            }
+
+            .controls {
+                gap: 20px;
+            }
+
+            .control-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .play-btn {
+                width: 70px;
+                height: 70px;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="calculator">
-        <div class="header">
-            <h1>⚡ КАЛЬКУЛЯТОР</h1>
+    <div class="player-container">
+        <div class="album-art" id="albumArt">
+            <i class="fas fa-music"></i>
         </div>
 
-        <div class="mode-switch">
-            <button class="mode-btn active" data-mode="square">м²</button>
-            <button class="mode-btn" data-mode="linear">п.м.</button>
+        <div class="track-info">
+            <div class="track-title" id="trackTitle">Выберите музыку</div>
+            <div class="track-artist" id="trackArtist">Неизвестный исполнитель</div>
         </div>
 
-        <div class="display">
-            <div class="measurements" id="measurements"></div>
-            <div class="total-label">ИТОГО:</div>
-            <div class="total" id="total">0 м²</div>
-        </div>
-
-        <div class="input-row" id="inputRow">
-            <div class="input-group full-width" id="lengthGroup">
-                <label>Длина (м)</label>
-                <input type="number" id="length" step="0.01" placeholder="0.00">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress" id="progress"></div>
             </div>
-            <div class="input-group" id="widthGroup">
-                <label>Ширина (м)</label>
-                <input type="number" id="width" step="0.01" placeholder="0.00">
+            <div class="time">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
             </div>
         </div>
 
-        <div class="buttons">
-            <button class="btn btn-add" id="addBtn">+</button>
-            <button class="btn btn-clear" id="clearBtn">C</button>
-            <button class="btn btn-equals" id="equalsBtn">=</button>
+        <div class="controls">
+            <button class="control-btn" id="prevBtn">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="control-btn play-btn" id="playBtn">
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="control-btn" id="nextBtn">
+                <i class="fas fa-step-forward"></i>
+            </button>
         </div>
 
-        <div class="save-section" id="saveSection">
-            <input type="text" id="orderNumber" placeholder="Номер заказа">
-            <textarea id="orderComment" placeholder="Комментарий..."></textarea>
-            <button class="btn-save" id="saveBtn">Сохранить заказ</button>
+        <div class="volume-container">
+            <i class="fas fa-volume-up volume-icon"></i>
+            <div class="volume-slider" id="volumeSlider">
+                <div class="volume-level" id="volumeLevel"></div>
+            </div>
         </div>
 
-        <div class="orders-feed" id="ordersFeed">
-            <div class="empty-state">Заказы появятся здесь</div>
-        </div>
+        <label class="upload-btn">
+            <i class="fas fa-upload"></i> Загрузить музыку
+            <input type="file" id="fileInput" accept="audio/*" multiple style="display: none;">
+        </label>
+
+        <div class="playlist" id="playlist"></div>
     </div>
 
+    <audio id="audio"></audio>
+
     <script>
-        let mode = 'square';
-        let measurements = [];
-        let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeLevel = document.getElementById('volumeLevel');
+        const fileInput = document.getElementById('fileInput');
+        const playlist = document.getElementById('playlist');
+        const trackTitle = document.getElementById('trackTitle');
+        const trackArtist = document.getElementById('trackArtist');
+        const albumArt = document.getElementById('albumArt');
 
-        const modeBtns = document.querySelectorAll('.mode-btn');
-        const widthGroup = document.getElementById('widthGroup');
-        const lengthGroup = document.getElementById('lengthGroup');
-        const lengthInput = document.getElementById('length');
-        const widthInput = document.getElementById('width');
-        const addBtn = document.getElementById('addBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const equalsBtn = document.getElementById('equalsBtn');
-        const totalDisplay = document.getElementById('total');
-        const measurementsDisplay = document.getElementById('measurements');
-        const saveSection = document.getElementById('saveSection');
-        const saveBtn = document.getElementById('saveBtn');
-        const ordersFeed = document.getElementById('ordersFeed');
+        let tracks = [];
+        let currentTrackIndex = 0;
+        let isPlaying = false;
 
-        // Переключение режима
-        modeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                modeBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                mode = btn.dataset.mode;
-                
-                if (mode === 'square') {
-                    widthGroup.style.display = 'flex';
-                    lengthGroup.classList.remove('full-width');
-                } else {
-                    widthGroup.style.display = 'none';
-                    lengthGroup.classList.add('full-width');
-                }
-                reset();
-            });
+        // Загрузка файлов
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            tracks = files.map(file => ({
+                name: file.name.replace(/\.[^/.]+$/, ""),
+                file: file,
+                url: URL.createObjectURL(file)
+            }));
+            
+            renderPlaylist();
+            if (tracks.length > 0) {
+                loadTrack(0);
+            }
         });
 
-        // Добавить измерение
-        addBtn.addEventListener('click', () => {
-            const length = parseFloat(lengthInput.value);
-            if (isNaN(length) || length <= 0) {
-                alert('Введите длину');
-                return;
-            }
-
-            let value;
-            if (mode === 'square') {
-                const width = parseFloat(widthInput.value);
-                if (isNaN(width) || width <= 0) {
-                    alert('Введите ширину');
-                    return;
-                }
-                value = length * width;
-                measurements.push({ length, width, value });
-            } else {
-                value = length;
-                measurements.push({ length, value });
-            }
-
-            updateDisplay();
-            lengthInput.value = '';
-            widthInput.value = '';
-            lengthInput.focus();
-        });
-
-        // Очистить
-        clearBtn.addEventListener('click', reset);
-
-        // Равно
-        equalsBtn.addEventListener('click', () => {
-            if (measurements.length === 0) {
-                alert('Добавьте хотя бы одно измерение');
-                return;
-            }
-            saveSection.classList.add('active');
-            document.getElementById('orderNumber').focus();
-        });
-
-        // Сохранить заказ
-        saveBtn.addEventListener('click', () => {
-            const orderNumber = document.getElementById('orderNumber').value.trim();
-            const comment = document.getElementById('orderComment').value.trim();
-
-            if (!orderNumber) {
-                alert('Введите номер заказа');
-                return;
-            }
-
-            const total = measurements.reduce((sum, m) => sum + m.value, 0);
-            const order = {
-                id: Date.now(),
-                number: orderNumber,
-                comment: comment,
-                value: total.toFixed(2),
-                unit: mode === 'square' ? 'м²' : 'п.м.',
-                date: new Date().toLocaleString('ru-RU')
-            };
-
-            orders.unshift(order);
-            localStorage.setItem('orders', JSON.stringify(orders));
-
-            document.getElementById('orderNumber').value = '';
-            document.getElementById('orderComment').value = '';
-            saveSection.classList.remove('active');
-
-            renderOrders();
-            reset();
-        });
-
-        function updateDisplay() {
-            const total = measurements.reduce((sum, m) => sum + m.value, 0);
-            const unit = mode === 'square' ? 'м²' : 'п.м.';
-            totalDisplay.textContent = `${total.toFixed(2)} ${unit}`;
-
-            measurementsDisplay.innerHTML = measurements.map((m, i) => {
-                if (mode === 'square') {
-                    return `<div class="measurement-item">
-                        <span>${m.length} × ${m.width} м</span>
-                        <span class="value">${m.value.toFixed(2)} м²</span>
-                    </div>`;
-                } else {
-                    return `<div class="measurement-item">
-                        <span>${m.length} м</span>
-                        <span class="value">${m.value.toFixed(2)} п.м.</span>
-                    </div>`;
-                }
-            }).join('');
-        }
-
-        function reset() {
-            measurements = [];
-            lengthInput.value = '';
-            widthInput.value = '';
-            totalDisplay.textContent = mode === 'square' ? '0 м²' : '0 п.м.';
-            measurementsDisplay.innerHTML = '';
-            saveSection.classList.remove('active');
-        }
-
-        function renderOrders() {
-            if (orders.length === 0) {
-                ordersFeed.innerHTML = '<div class="empty-state">Заказы появятся здесь</div>';
-                return;
-            }
-
-            ordersFeed.innerHTML = orders.map(order => `
-                <div class="order-card">
-                    <div class="order-header">
-                        <span class="order-number">#${order.number}</span>
-                        <span class="order-date">${order.date}</span>
-                    </div>
-                    <div class="order-value">${order.value} ${order.unit}</div>
-                    ${order.comment ? `<div class="order-comment">${order.comment}</div>` : ''}
+        // Рендер плейлиста
+        function renderPlaylist() {
+            playlist.innerHTML = tracks.map((track, index) => `
+                <div class="playlist-item ${index === currentTrackIndex ? 'active' : ''}" data-index="${index}">
+                    <i class="fas fa-music"></i>
+                    <span>${track.name}</span>
                 </div>
             `).join('');
+
+            document.querySelectorAll('.playlist-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const index = parseInt(item.dataset.index);
+                    loadTrack(index);
+                    playAudio();
+                });
+            });
         }
 
-        // Инициализация
-        renderOrders();
+        // Загрузка трека
+        function loadTrack(index) {
+            if (index < 0 || index >= tracks.length) return;
+            
+            currentTrackIndex = index;
+            const track = tracks[index];
+            
+            audio.src = track.url;
+            trackTitle.textContent = track.name;
+            trackArtist.textContent = 'Локальный файл';
+            
+            renderPlaylist();
+        }
+
+        // Воспроизведение
+        function playAudio() {
+            audio.play();
+            isPlaying = true;
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            albumArt.classList.add('playing');
+        }
+
+        function pauseAudio() {
+            audio.pause();
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            albumArt.classList.remove('playing');
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (tracks.length === 0) {
+                alert('Сначала загрузите музыку!');
+                return;
+            }
+            
+            if (isPlaying) {
+                pauseAudio();
+            } else {
+                playAudio();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (tracks.length === 0) return;
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            loadTrack(currentTrackIndex);
+            if (isPlaying) playAudio();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (tracks.length === 0) return;
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            loadTrack(currentTrackIndex);
+            if (isPlaying) playAudio();
+        });
+
+        // Прогресс
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = percent + '%';
+                currentTimeEl.textContent = formatTime(audio.currentTime);
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('ended', () => {
+            nextBtn.click();
+        });
+
+        progressBar.addEventListener('click', (e) => {
+            const width = progressBar.clientWidth;
+            const clickX = e.offsetX;
+            audio.currentTime = (clickX / width) * audio.duration;
+        });
+
+        // Громкость
+        audio.volume = 0.7;
+        volumeSlider.addEventListener('click', (e) => {
+            const width = volumeSlider.clientWidth;
+            const clickX = e.offsetX;
+            const volume = clickX / width;
+            audio.volume = volume;
+            volumeLevel.style.width = (volume * 100) + '%';
+        });
+
+        // Форматирование времени
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
     </script>
 </body>
 </html>
