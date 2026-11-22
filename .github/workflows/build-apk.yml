@@ -23,8 +23,12 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Установить Android SDK
-      uses: android-actions/setup-android@v3
+    - name: Настроить Android SDK
+      run: |
+        echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+        echo "/usr/local/lib/android/sdk/platform-tools" >> $GITHUB_PATH
+        echo "/usr/local/lib/android/sdk/tools" >> $GITHUB_PATH
+        yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
     - name: Установить Capacitor
       run: npm install @capacitor/core @capacitor/cli @capacitor/android
