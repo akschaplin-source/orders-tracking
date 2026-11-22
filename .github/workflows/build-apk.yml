@@ -16,7 +16,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '21'
+        java-version: '17'
 
     - name: Установить Node.js
       uses: actions/setup-node@v4
@@ -38,19 +38,32 @@ jobs:
         cp *.js www/ 2>/dev/null || true
         cp -r images www/ 2>/dev/null || true
 
-    - name: Установить Capacitor
-      run: npm install @capacitor/core @capacitor/cli @capacitor/android
+    - name: Установить Capacitor 5
+      run: npm install @capacitor/core@5 @capacitor/cli@5 @capacitor/android@5
 
     - name: Добавить Android и синхронизировать
       run: |
         npx cap add android
         npx cap sync android
 
+    - name: Исправить конфликт версий Kotlin
+      run: |
+        cat >> android/app/build.gradle << 'EOF'
+        
+        configurations.all {
+            resolutionStrategy {
+                force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+            }
+        }
+        EOF
+
     - name: Собрать APK
       run: |
         cd android
         chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon --stacktrace
+        ./gradlew assembleDebug --no-daemon
       env:
         GRADLE_OPTS: "-Xmx2048m"
 
