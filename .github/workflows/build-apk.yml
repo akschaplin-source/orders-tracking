@@ -30,6 +30,14 @@ jobs:
         echo "/usr/local/lib/android/sdk/tools" >> $GITHUB_PATH
         yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
+    - name: Создать папку www и скопировать файлы
+      run: |
+        mkdir -p www
+        cp *.html www/
+        cp *.css www/ 2>/dev/null || true
+        cp *.js www/ 2>/dev/null || true
+        cp -r images www/ 2>/dev/null || true
+
     - name: Установить Capacitor
       run: npm install @capacitor/core @capacitor/cli @capacitor/android
 
